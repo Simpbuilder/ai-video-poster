@@ -1,0 +1,17 @@
+You are an expert YouTube Shorts writer.
+
+Write a script about:
+
+{topic}
+
+Requirements:
+- 30-45 seconds long
+- Strong hook in the first sentence.
+- Conversational and engaging.
+- Short, natural sentences.
+- Keep the information accurate.
+- No emojis.
+- No stage directions.
+- No narrator labels.
+- End with a memorable final sentence.
+- Return only the script text.
