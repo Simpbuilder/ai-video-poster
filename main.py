@@ -1,4 +1,4 @@
-from config import OPENAI_MODEL
+from config import MAX_TOPICS, OPENAI_MODEL
 from generators.script_generator import ScriptGenerationError, generate_script
 from utils.file_utils import (
     create_topic_folder,
@@ -11,7 +11,14 @@ from utils.logger import log
 
 log("Program started.")
 
-for topic in read_topics("topics.txt"):
+topics = list(read_topics("topics.txt"))
+
+if MAX_TOPICS is not None:
+    topics = topics[:MAX_TOPICS]
+
+log(f"Topics to process: {len(topics)}")
+
+for topic in topics:
     log(f"Processing topic: {topic}")
     folder_path = create_topic_folder(topic)
 

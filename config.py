@@ -1,1 +1,2 @@
 OPENAI_MODEL = "gpt-5.4-mini"
+MAX_TOPICS = 1
