@@ -8,6 +8,7 @@ PROJECT_FOLDER = Path(__file__).resolve().parent
 PIPELINE_STEPS = [
     "main.py",
     "prepare_voice.py",
+    "generate_scenes.py",
     "generate_voice.py",
     "generate_subtitles.py",
     "generate_video.py",
@@ -28,6 +29,9 @@ def main():
     print("Pipeline started.")
 
     for script_name in PIPELINE_STEPS:
+        if script_name == "generate_scenes.py":
+            print("\nScene plans will be generated for approved scripts.")
+
         if script_name == "generate_voice.py":
             print("\nOnly approved scripts will continue to voice, subtitles, and video.")
 
