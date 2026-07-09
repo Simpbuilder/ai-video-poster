@@ -10,6 +10,7 @@ For each topic, the project can:
 3. Generate voice audio for approved scripts.
 4. Create timed subtitles.
 5. Build a vertical video with ffmpeg.
+6. Move the finished topic folder into `completed/`.
 
 Scripts must be approved before voice, subtitle, and video generation can
 continue.
@@ -20,6 +21,7 @@ continue.
 ai-video-poster/
 |-- approval/             Pending and approved topic folders
 |-- assets/               Project media assets
+|-- completed/            Finished topic folders and videos
 |-- generators/           Script, voice, subtitle, and video generation code
 |-- logs/                 Daily logs and API token usage
 |-- output/               Generated scripts and metadata
@@ -29,6 +31,7 @@ ai-video-poster/
 |-- utils/                File, logging, and usage helper functions
 |-- .env                   OpenAI API key (keep this private)
 |-- approve.py            Approves or rejects pending scripts
+|-- complete_videos.py    Moves finished videos into completed/
 |-- config.py             Project settings
 |-- generate_subtitles.py Creates subtitles for voice-generated scripts
 |-- generate_video.py     Creates videos from audio and subtitles
@@ -91,17 +94,20 @@ py -m pip install -r requirements.txt
 4. Choose `approve` or `reject`, then select scripts by number, comma-separated
    numbers, or `all`.
 5. Run `py run_pipeline.py` again.
-6. Find the completed video at `approval/topic/final.mp4`.
+6. Find the completed video at `completed/topic/final.mp4`.
 
 The first pipeline run creates scripts for review. The second pipeline run
-continues approved scripts through voice, subtitles, and video.
+continues approved scripts through voice, subtitles, and video, then moves each
+finished topic folder into `completed/`.
 
 ## Approval Behavior
 
 - Pending scripts are stored in `approval/`.
 - Rejected script folders are moved to `rejected/`.
-- Approved scripts remain in `approval/` and continue to voice, subtitle, and
-  video generation.
+- Approved scripts continue to voice, subtitle, and video generation.
+- Finished topic folders are moved from `approval/` to `completed/`.
+- If a folder name already exists in `completed/`, a suffix such as `_1` or
+  `_2` is added.
 - The pipeline never runs `approve.py` automatically.
 
 ## Configuration
@@ -124,6 +130,7 @@ The settings in `config.py` control how the project runs:
 - `approval.json`: The topic's approval status and processing progress.
 - `voice.mp3`: The generated voice audio.
 - `subtitles.srt`: Timed subtitles for the video.
-- `final.mp4`: The completed vertical video.
+- `final.mp4`: The completed vertical video, stored in its topic folder under
+  `completed/`.
 - `metadata.json`: Script details, model information, timestamps, and token
   usage stored in the topic's `output/` folder.
