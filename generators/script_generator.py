@@ -4,6 +4,8 @@ from pathlib import Path
 from dotenv import load_dotenv
 from openai import OpenAI
 
+from config import OPENAI_MODEL
+
 load_dotenv()
 
 api_key = os.getenv("OPENAI_API_KEY")
@@ -14,8 +16,6 @@ if not api_key:
     )
 
 client = OpenAI(api_key=api_key)
-
-MODEL_NAME = "gpt-5.4-mini"
 
 
 class ScriptGenerationError(Exception):
@@ -30,7 +30,7 @@ def generate_script(topic):
 
     try:
         response = client.responses.create(
-            model=MODEL_NAME,
+            model=OPENAI_MODEL,
             input=prompt,
         )
     except Exception as error:

@@ -1,8 +1,5 @@
-from generators.script_generator import (
-    MODEL_NAME,
-    ScriptGenerationError,
-    generate_script,
-)
+from config import OPENAI_MODEL
+from generators.script_generator import ScriptGenerationError, generate_script
 from utils.file_utils import (
     create_topic_folder,
     read_topics,
@@ -24,12 +21,12 @@ for topic in read_topics("topics.txt"):
         log(f"Could not generate a script for '{topic}': {error}")
         continue
 
-    log_usage(topic, MODEL_NAME, usage)
+    log_usage(topic, OPENAI_MODEL, usage)
 
     script_path = save_script(folder_path, script)
     log(f"Saved script: {script_path}")
 
-    metadata_path = save_metadata(folder_path, topic, MODEL_NAME, usage)
+    metadata_path = save_metadata(folder_path, topic, OPENAI_MODEL, usage)
     log(f"Saved metadata: {metadata_path}")
 
 log("Program finished.")

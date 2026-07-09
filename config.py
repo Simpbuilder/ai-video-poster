@@ -1,1 +1,1 @@
-# Project settings will go here later.
+OPENAI_MODEL = "gpt-5.4-mini"
