@@ -1,6 +1,6 @@
 {
     "topic": "Why BMW engines sound different in Sport mode",
-    "status": "completed",
+    "status": "video_generated",
     "approved": true,
     "created_at": "2026-07-09T11:50:56.978149+00:00",
     "script_file": "script.txt",
@@ -12,6 +12,5 @@
     "subtitles_file": "subtitles.srt",
     "subtitles_generated_at": "2026-07-09T12:21:29.861149+00:00",
     "video_file": "final.mp4",
-    "video_generated_at": "2026-07-09T12:21:36.262591+00:00",
-    "completed_at": "2026-07-09T12:21:38.897191+00:00"
+    "video_generated_at": "2026-07-09T13:16:04.387711+00:00"
 }

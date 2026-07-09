@@ -3,40 +3,41 @@ import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
+from config import FORCE_REGENERATE_VIDEO
 from generators.video_generator import generate_video
 
 
 def find_items_ready_for_video():
     ready_items = []
-    approval_folder = Path("approval")
+    allowed_statuses = [
+        "subtitles_generated",
+        "video_generated",
+        "completed",
+    ]
 
-    for approval_path in approval_folder.rglob("approval.json"):
-        with open(approval_path, "r", encoding="utf-8") as approval_file:
-            approval = json.load(approval_file)
+    for folder_name in ["approval", "completed"]:
+        folder = Path(folder_name)
 
-        voice_file = approval.get("voice_file")
-        subtitles_file = approval.get("subtitles_file")
-        voice_path = approval_path.parent / voice_file if voice_file else None
-        subtitles_path = (
-            approval_path.parent / subtitles_file
-            if subtitles_file
-            else None
-        )
+        for approval_path in folder.rglob("approval.json"):
+            with open(approval_path, "r", encoding="utf-8") as approval_file:
+                approval = json.load(approval_file)
 
-        if (
-            approval.get("approved") is True
-            and approval.get("status") == "subtitles_generated"
-            and voice_path is not None
-            and voice_path.exists()
-            and subtitles_path is not None
-            and subtitles_path.exists()
-        ):
-            ready_items.append({
-                "path": approval_path,
-                "data": approval,
-                "voice_path": voice_path,
-                "subtitles_path": subtitles_path,
-            })
+            topic_folder = approval_path.parent
+            voice_path = topic_folder / "voice.mp3"
+            subtitles_path = topic_folder / "subtitles.srt"
+
+            if (
+                approval.get("approved") is True
+                and approval.get("status") in allowed_statuses
+                and voice_path.exists()
+                and subtitles_path.exists()
+            ):
+                ready_items.append({
+                    "path": approval_path,
+                    "data": approval,
+                    "voice_path": voice_path,
+                    "subtitles_path": subtitles_path,
+                })
 
     return ready_items
 
@@ -45,7 +46,7 @@ def main():
     ready_items = find_items_ready_for_video()
 
     if not ready_items:
-        print("There are no subtitle-ready items waiting for video generation.")
+        print("There are no items ready for video generation.")
         return
 
     for ready_item in ready_items:
@@ -53,9 +54,12 @@ def main():
         approval = ready_item["data"]
         video_path = approval_path.parent / "final.mp4"
 
-        if video_path.exists():
+        if video_path.exists() and not FORCE_REGENERATE_VIDEO:
             print(f"Video already exists for: {approval['topic']}")
             continue
+
+        if video_path.exists():
+            print(f"Regenerating video for: {approval['topic']}")
 
         print(f"Generating video for: {approval['topic']}")
 
@@ -72,7 +76,9 @@ def main():
             print(f"Could not generate video for: {approval['topic']}")
             continue
 
-        approval["status"] = "video_generated"
+        if approval["status"] == "subtitles_generated":
+            approval["status"] = "video_generated"
+
         approval["video_file"] = "final.mp4"
         approval["video_generated_at"] = datetime.now(
             timezone.utc
