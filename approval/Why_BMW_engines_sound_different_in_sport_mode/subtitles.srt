@@ -1,127 +1,123 @@
 1
-00:00:00,000 --> 00:00:01,800
-BMW engines don't sound
+00:00:00,000 --> 00:00:01,520
+Why does a BMW
 
 2
-00:00:01,800 --> 00:00:02,700
-louder in sport mode
+00:00:01,520 --> 00:00:03,480
+suddenly sound angrier in
 
 3
-00:00:02,700 --> 00:00:04,440
-by accident they're actually
+00:00:03,480 --> 00:00:05,280
+Sport mode It's not
 
 4
-00:00:04,440 --> 00:00:05,940
-talking to you In
+00:00:05,280 --> 00:00:07,620
+magic It's engineering When
 
 5
-00:00:05,940 --> 00:00:07,680
-sport mode BMW sharpens
+00:00:07,620 --> 00:00:08,860
+you switch modes the
 
 6
-00:00:07,680 --> 00:00:09,020
-the throttle so the
+00:00:08,860 --> 00:00:10,080
+car changes how the
 
 7
-00:00:09,020 --> 00:00:10,900
-engine responds faster and
+00:00:10,080 --> 00:00:11,300
+throttle responds how the
 
 8
-00:00:10,900 --> 00:00:12,020
-revs climb more aggressively
+00:00:11,300 --> 00:00:13,020
+transmission shifts and often
 
 9
-00:00:12,880 --> 00:00:14,200
-The transmission also holds
+00:00:13,020 --> 00:00:14,040
+how the exhaust valves
 
 10
-00:00:14,200 --> 00:00:15,700
-gears longer which keeps
+00:00:14,040 --> 00:00:16,780
+open In Comfort BMW
 
 11
-00:00:15,700 --> 00:00:16,460
-the engine in a
+00:00:16,780 --> 00:00:18,400
+keeps things quiet and
 
 12
-00:00:16,460 --> 00:00:17,920
-higher more aggressive part
+00:00:18,400 --> 00:00:19,960
+smooth In Sport it
 
 13
-00:00:17,920 --> 00:00:18,620
-of the rev range
+00:00:19,960 --> 00:00:21,160
+opens the exhaust more
 
 14
-00:00:19,400 --> 00:00:20,320
-Then there's the sound
+00:00:21,640 --> 00:00:22,540
+lets more engine sound
 
 15
-00:00:20,320 --> 00:00:22,460
-itself Many BMWs use
+00:00:22,540 --> 00:00:24,060
+escape and holds gears
 
 16
-00:00:22,460 --> 00:00:24,100
-active exhaust valves and
+00:00:24,060 --> 00:00:25,240
+longer so you hear
 
 17
-00:00:24,100 --> 00:00:25,140
-sport mode opens them
+00:00:25,240 --> 00:00:27,700
+the revs climb Some
 
 18
-00:00:25,140 --> 00:00:26,280
-up so more engine
+00:00:27,700 --> 00:00:29,160
+BMWs also use sound
 
 19
-00:00:26,280 --> 00:00:27,900
-noise gets out On
+00:00:29,160 --> 00:00:30,280
+enhancement through the speakers
 
 20
-00:00:27,900 --> 00:00:29,740
-some models BMW also
+00:00:30,800 --> 00:00:31,540
+which makes the engine
 
 21
-00:00:29,740 --> 00:00:30,640
-adds sound through the
+00:00:31,540 --> 00:00:32,720
+feel even more aggressive
 
 22
-00:00:30,640 --> 00:00:31,540
-speakers to make the
+00:00:32,720 --> 00:00:35,000
+inside the cabin So
 
 23
-00:00:31,540 --> 00:00:32,600
-cabin feel even more
+00:00:35,000 --> 00:00:35,720
+the sound you hear
 
 24
-00:00:32,600 --> 00:00:34,380
-intense So the sound
+00:00:35,720 --> 00:00:36,440
+is a mix of
 
 25
-00:00:34,380 --> 00:00:35,520
-changes because the car
+00:00:36,440 --> 00:00:37,920
+real exhaust note engine
 
 26
-00:00:35,520 --> 00:00:38,140
-changes Faster responses higher
+00:00:37,920 --> 00:00:39,140
+behavior and a little
 
 27
-00:00:38,140 --> 00:00:40,020
-revs louder exhaust and
+00:00:39,140 --> 00:00:41,240
+audio help Sport mode
 
 28
-00:00:40,020 --> 00:00:41,320
-sometimes a little electronic
+00:00:41,240 --> 00:00:42,120
+doesn't just make the
 
 29
-00:00:41,320 --> 00:00:43,060
-drama Sport mode doesn't
+00:00:42,120 --> 00:00:43,480
+car feel faster It
 
 30
-00:00:43,060 --> 00:00:43,920
-just wake up the
+00:00:43,480 --> 00:00:44,380
+makes it sound like
 
 31
-00:00:43,920 --> 00:00:45,120
-engine it wakes up
-
-32
-00:00:45,120 --> 00:00:45,720
-the whole car
+00:00:44,380 --> 00:00:45,120
+it means business
