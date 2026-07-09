@@ -2,3 +2,5 @@ OPENAI_MODEL = "gpt-5.4-mini"
 MAX_TOPICS = 1
 SKIP_EXISTING_SCRIPTS = True
 COPY_SCRIPT_TO_APPROVAL = True
+VOICE_MODEL = "gpt-4o-mini-tts"
+VOICE_NAME = "marin"
