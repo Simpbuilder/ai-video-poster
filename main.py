@@ -1,4 +1,4 @@
-from config import MAX_TOPICS, OPENAI_MODEL
+from config import MAX_TOPICS, OPENAI_MODEL, SKIP_EXISTING_SCRIPTS
 from generators.script_generator import ScriptGenerationError, generate_script
 from utils.file_utils import (
     create_topic_folder,
@@ -21,6 +21,11 @@ log(f"Topics to process: {len(topics)}")
 for topic in topics:
     log(f"Processing topic: {topic}")
     folder_path = create_topic_folder(topic)
+    existing_script = folder_path / "script.txt"
+
+    if SKIP_EXISTING_SCRIPTS and existing_script.exists():
+        log(f"Skipping topic because script already exists: {topic}")
+        continue
 
     try:
         script, usage = generate_script(topic)
