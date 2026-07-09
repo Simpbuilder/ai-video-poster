@@ -9,16 +9,24 @@ from utils.file_utils import (
     save_metadata,
     save_script,
 )
+from utils.logger import log
+
+log("Program started.")
 
 for topic in read_topics("topics.txt"):
+    log(f"Processing topic: {topic}")
     folder_path = create_topic_folder(topic)
 
     try:
         script = generate_script(topic)
     except ScriptGenerationError as error:
-        print(f"Could not generate a script for '{topic}': {error}")
+        log(f"Could not generate a script for '{topic}': {error}")
         continue
 
     script_path = save_script(folder_path, script)
-    save_metadata(folder_path, topic, MODEL_NAME)
-    print(f"Saved script: {script_path}")
+    log(f"Saved script: {script_path}")
+
+    metadata_path = save_metadata(folder_path, topic, MODEL_NAME)
+    log(f"Saved metadata: {metadata_path}")
+
+log("Program finished.")
