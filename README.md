@@ -7,13 +7,14 @@ For each topic, the project can:
 
 1. Generate a YouTube Shorts script with OpenAI.
 2. Place the script in an approval queue.
-3. Generate voice audio for approved scripts.
-4. Create timed subtitles.
-5. Build a vertical video with ffmpeg.
-6. Move the finished topic folder into `completed/`.
+3. Create a scene plan for approved scripts with OpenAI.
+4. Generate voice audio for approved scripts.
+5. Create timed subtitles.
+6. Build a vertical video with ffmpeg.
+7. Move the finished topic folder into `completed/`.
 
-Scripts must be approved before voice, subtitle, and video generation can
-continue.
+Scripts must be approved before scene, voice, subtitle, and video generation
+can continue.
 
 ## Folder Structure
 
@@ -22,7 +23,7 @@ ai-video-poster/
 |-- approval/             Pending and approved topic folders
 |-- assets/               Project media assets
 |-- completed/            Finished topic folders and videos
-|-- generators/           Script, voice, subtitle, and video generation code
+|-- generators/           Script, scene, voice, subtitle, and video generators
 |-- logs/                 Daily logs and API token usage
 |-- output/               Generated scripts and metadata
 |-- posted/               Videos that have been posted
@@ -33,6 +34,7 @@ ai-video-poster/
 |-- approve.py            Approves or rejects pending scripts
 |-- complete_videos.py    Moves finished videos into completed/
 |-- config.py             Project settings
+|-- generate_scenes.py    Creates scene plans for approved scripts
 |-- generate_subtitles.py Creates subtitles for voice-generated scripts
 |-- generate_video.py     Creates videos from audio and subtitles
 |-- generate_voice.py     Creates audio for approved scripts
@@ -97,14 +99,14 @@ py -m pip install -r requirements.txt
 6. Find the completed video at `completed/topic/final.mp4`.
 
 The first pipeline run creates scripts for review. The second pipeline run
-continues approved scripts through voice, subtitles, and video, then moves each
-finished topic folder into `completed/`.
+continues approved scripts through scene planning, voice, subtitles, and video,
+then moves each finished topic folder into `completed/`.
 
 ## Approval Behavior
 
 - Pending scripts are stored in `approval/`.
 - Rejected script folders are moved to `rejected/`.
-- Approved scripts continue to voice, subtitle, and video generation.
+- Approved scripts continue to scene, voice, subtitle, and video generation.
 - Finished topic folders are moved from `approval/` to `completed/`.
 - If a folder name already exists in `completed/`, a suffix such as `_1` or
   `_2` is added.
@@ -128,6 +130,8 @@ The settings in `config.py` control how the project runs:
 
 - `script.txt`: The generated YouTube Shorts script.
 - `approval.json`: The topic's approval status and processing progress.
+- `scenes.json`: The scene plan, narration sections, visual descriptions, image
+  prompts, and estimated scene durations.
 - `voice.mp3`: The generated voice audio.
 - `subtitles.srt`: Timed subtitles for the video.
 - `final.mp4`: The completed vertical video, stored in its topic folder under
