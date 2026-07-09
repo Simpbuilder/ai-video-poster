@@ -21,6 +21,35 @@ def srt_time_to_seconds(srt_time):
     )
 
 
+def get_audio_duration(audio_path):
+    command = [
+        "ffprobe",
+        "-v",
+        "error",
+        "-show_entries",
+        "format=duration",
+        "-of",
+        "default=noprint_wrappers=1:nokey=1",
+        str(audio_path),
+    ]
+
+    try:
+        result = subprocess.run(
+            command,
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+        duration = float(result.stdout.strip())
+    except (OSError, subprocess.CalledProcessError, ValueError):
+        return None
+
+    if duration <= 0:
+        return None
+
+    return duration
+
+
 def find_scene_images(topic_folder):
     scenes_path = topic_folder / "scenes.json"
 
@@ -104,6 +133,7 @@ def create_scene_background_command(
     subtitles_path,
     output_path,
     scene_images,
+    audio_duration,
 ):
     command = [
         "ffmpeg",
@@ -130,18 +160,25 @@ def create_scene_background_command(
     filters = []
     previous_background = "[0:v]"
 
-    for index, scene in enumerate(scene_images, start=1):
-        scene_label = f"[scene_{index}]"
-        background_label = f"[background_{index}]"
+    for position, scene in enumerate(scene_images):
+        input_number = position + 1
+        scene_label = f"[scene_{input_number}]"
+        background_label = f"[background_{input_number}]"
+
+        if position + 1 < len(scene_images):
+            display_end = scene_images[position + 1]["start_seconds"]
+        else:
+            display_end = 99999
+
         filters.append(
-            f"[{index}:v]scale=1080:1920:"
+            f"[{input_number}:v]scale=1080:1920:"
             "force_original_aspect_ratio=increase,"
             f"crop=1080:1920,setsar=1{scene_label}"
         )
         filters.append(
             f"{previous_background}{scene_label}overlay="
             f"enable='between(t,{scene['start_seconds']},"
-            f"{scene['end_seconds']})'{background_label}"
+            f"{display_end})'{background_label}"
         )
         previous_background = background_label
 
@@ -186,11 +223,13 @@ def generate_video(voice_path, subtitles_path, output_path):
     scene_images = find_scene_images(topic_folder)
 
     if scene_images:
+        audio_duration = get_audio_duration(voice_path)
         command = create_scene_background_command(
             voice_path,
             subtitles_path,
             output_path,
             scene_images,
+            audio_duration,
         )
     else:
         command = create_dark_background_command(
