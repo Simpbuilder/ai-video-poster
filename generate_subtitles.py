@@ -1,4 +1,5 @@
 import json
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -25,6 +26,7 @@ def find_scripts_ready_for_subtitles():
             ready_scripts.append({
                 "path": approval_path,
                 "data": approval,
+                "voice_path": voice_path,
             })
 
     return ready_scripts
@@ -50,7 +52,18 @@ def main():
         script_path = topic_folder / "script.txt"
         script = script_path.read_text(encoding="utf-8")
 
-        generate_subtitles(script, subtitles_path)
+        try:
+            generate_subtitles(
+                script,
+                ready_script["voice_path"],
+                subtitles_path,
+            )
+        except FileNotFoundError:
+            print("ffprobe was not found. Install ffmpeg and add it to PATH.")
+            return
+        except (subprocess.CalledProcessError, ValueError):
+            print(f"Could not read voice duration for: {approval['topic']}")
+            continue
 
         approval["status"] = "subtitles_generated"
         approval["subtitles_file"] = "subtitles.srt"
