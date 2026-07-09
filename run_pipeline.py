@@ -11,6 +11,7 @@ PIPELINE_STEPS = [
     "generate_voice.py",
     "generate_subtitles.py",
     "generate_video.py",
+    "complete_videos.py",
 ]
 
 
@@ -29,6 +30,9 @@ def main():
     for script_name in PIPELINE_STEPS:
         if script_name == "generate_voice.py":
             print("\nOnly approved scripts will continue to voice, subtitles, and video.")
+
+        if script_name == "complete_videos.py":
+            print("\nCompleted videos will be moved to completed/.")
 
         try:
             run_step(script_name)
