@@ -1,4 +1,5 @@
 import json
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -60,6 +61,37 @@ def approve_script(selected_script):
     print(f"Approved: {approval['topic']}")
 
 
+def get_rejected_folder(source_folder):
+    rejected_folder = Path("rejected")
+    rejected_folder.mkdir(exist_ok=True)
+
+    destination = rejected_folder / source_folder.name
+    suffix = 1
+
+    while destination.exists():
+        destination = rejected_folder / f"{source_folder.name}_{suffix}"
+        suffix += 1
+
+    return destination
+
+
+def reject_script(selected_script):
+    approval = selected_script["data"]
+    approval["approved"] = False
+    approval["status"] = "rejected"
+    approval["rejected_at"] = datetime.now(timezone.utc).isoformat()
+
+    with open(selected_script["path"], "w", encoding="utf-8") as approval_file:
+        json.dump(approval, approval_file, indent=4)
+
+    source_folder = selected_script["path"].parent
+    destination = get_rejected_folder(source_folder)
+    shutil.move(str(source_folder), str(destination))
+
+    print(f"Rejected: {approval['topic']}")
+    print(f"Moved to: {destination}")
+
+
 def main():
     pending_scripts = find_pending_scripts()
 
@@ -72,6 +104,12 @@ def main():
     for number, script in enumerate(pending_scripts, start=1):
         print(f"{number}. {script['data']['topic']}")
 
+    action = input("Type approve or reject: ").strip().lower()
+
+    if action not in ["approve", "reject"]:
+        print("Please type approve or reject.")
+        return
+
     choice = input(
         "Type a number, comma-separated numbers, or all: "
     )
@@ -83,7 +121,11 @@ def main():
 
     for selected_number in selected_numbers:
         selected_script = pending_scripts[selected_number - 1]
-        approve_script(selected_script)
+
+        if action == "approve":
+            approve_script(selected_script)
+        else:
+            reject_script(selected_script)
 
 
 if __name__ == "__main__":
