@@ -1,6 +1,12 @@
-from config import MAX_TOPICS, OPENAI_MODEL, SKIP_EXISTING_SCRIPTS
+from config import (
+    COPY_SCRIPT_TO_APPROVAL,
+    MAX_TOPICS,
+    OPENAI_MODEL,
+    SKIP_EXISTING_SCRIPTS,
+)
 from generators.script_generator import ScriptGenerationError, generate_script
 from utils.file_utils import (
+    copy_script_to_approval,
     create_topic_folder,
     read_topics,
     save_metadata,
@@ -40,5 +46,9 @@ for topic in topics:
 
     metadata_path = save_metadata(folder_path, topic, OPENAI_MODEL, usage)
     log(f"Saved metadata: {metadata_path}")
+
+    if COPY_SCRIPT_TO_APPROVAL:
+        approval_script_path = copy_script_to_approval(topic, script_path)
+        log(f"Copied script to approval: {approval_script_path}")
 
 log("Program finished.")

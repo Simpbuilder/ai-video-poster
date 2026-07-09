@@ -1,8 +1,18 @@
 import json
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 
 illegal_characters = '<>:"/\\|?*'
+
+
+def make_safe_folder_name(topic):
+    safe_name = topic.replace(" ", "_")
+
+    for character in illegal_characters:
+        safe_name = safe_name.replace(character, "")
+
+    return safe_name
 
 
 def read_topics(file_path):
@@ -14,10 +24,7 @@ def read_topics(file_path):
 
 
 def create_topic_folder(topic):
-    safe_name = topic.replace(" ", "_")
-
-    for character in illegal_characters:
-        safe_name = safe_name.replace(character, "")
+    safe_name = make_safe_folder_name(topic)
 
     folder_path = Path("output") / safe_name
     folder_path.mkdir(parents=True, exist_ok=True)
@@ -50,3 +57,15 @@ def save_metadata(folder_path, topic, model, usage):
         json.dump(metadata, metadata_file, indent=4)
 
     return metadata_path
+
+
+def copy_script_to_approval(topic, script_path):
+    safe_name = make_safe_folder_name(topic)
+
+    approval_folder = Path("approval") / safe_name
+    approval_folder.mkdir(parents=True, exist_ok=True)
+
+    approval_script_path = approval_folder / "script.txt"
+    shutil.copy(script_path, approval_script_path)
+
+    return approval_script_path
