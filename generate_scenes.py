@@ -3,13 +3,15 @@ import re
 from datetime import datetime, timezone
 from pathlib import Path
 
+from config import FORCE_REGENERATE_SCENES
 from generators.scene_generator import (
     SceneGenerationError,
     generate_scene_plan,
 )
 
 
-SUBTITLES_PER_SCENE = 3
+# Higher numbers create fewer longer scenes; lower numbers create more shorter scenes.
+SUBTITLES_PER_SCENE = 5
 
 
 def srt_time_to_seconds(srt_time):
@@ -75,30 +77,35 @@ def create_scene_groups(subtitles):
 
 def find_scripts_ready_for_scenes():
     ready_scripts = []
-    approval_folder = Path("approval")
+    allowed_statuses = [
+        "subtitles_generated",
+        "video_generated",
+        "completed",
+    ]
 
-    for approval_path in approval_folder.rglob("approval.json"):
-        with open(approval_path, "r", encoding="utf-8") as approval_file:
-            approval = json.load(approval_file)
+    for folder_name in ["approval", "completed"]:
+        folder = Path(folder_name)
 
-        subtitles_file = approval.get("subtitles_file")
-        subtitles_path = (
-            approval_path.parent / subtitles_file
-            if subtitles_file
-            else None
-        )
+        for approval_path in folder.rglob("approval.json"):
+            with open(approval_path, "r", encoding="utf-8") as approval_file:
+                approval = json.load(approval_file)
 
-        if (
-            approval.get("approved") is True
-            and approval.get("status") == "subtitles_generated"
-            and subtitles_path is not None
-            and subtitles_path.exists()
-        ):
-            ready_scripts.append({
-                "path": approval_path,
-                "data": approval,
-                "subtitles_path": subtitles_path,
-            })
+            topic_folder = approval_path.parent
+            script_path = topic_folder / "script.txt"
+            subtitles_path = topic_folder / "subtitles.srt"
+
+            if (
+                approval.get("approved") is True
+                and approval.get("status") in allowed_statuses
+                and script_path.exists()
+                and subtitles_path.exists()
+            ):
+                ready_scripts.append({
+                    "path": approval_path,
+                    "data": approval,
+                    "script_path": script_path,
+                    "subtitles_path": subtitles_path,
+                })
 
     return ready_scripts
 
@@ -107,7 +114,7 @@ def main():
     ready_scripts = find_scripts_ready_for_scenes()
 
     if not ready_scripts:
-        print("There are no approved scripts ready for scene planning.")
+        print("There are no scripts ready for scene planning.")
         return
 
     for ready_script in ready_scripts:
@@ -116,14 +123,17 @@ def main():
         topic_folder = approval_path.parent
         scenes_path = topic_folder / "scenes.json"
 
-        if scenes_path.exists():
+        if scenes_path.exists() and not FORCE_REGENERATE_SCENES:
             print(f"Scene plan already exists for: {approval['topic']}")
             continue
 
-        script_path = topic_folder / "script.txt"
+        if scenes_path.exists():
+            print(f"Regenerating scene plan for: {approval['topic']}")
 
         try:
-            original_script = script_path.read_text(encoding="utf-8")
+            original_script = ready_script["script_path"].read_text(
+                encoding="utf-8"
+            )
             subtitles = read_subtitles(ready_script["subtitles_path"])
             scene_groups = create_scene_groups(subtitles)
 

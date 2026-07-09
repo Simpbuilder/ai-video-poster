@@ -1,10 +1,11 @@
 import json
 import os
+import re
 
 from dotenv import load_dotenv
 from openai import OpenAI
 
-from config import OPENAI_MODEL
+from config import IMAGE_STYLE, OPENAI_MODEL
 
 
 load_dotenv()
@@ -62,6 +63,48 @@ class SceneGenerationError(Exception):
     pass
 
 
+def apply_image_style(image_prompt):
+    banned_phrases = [
+        "ultra-detailed photo",
+        "commercial photography",
+        "hyper realistic",
+        "motion blur",
+        "glowing energy",
+        "speed lines",
+        "photorealistic",
+        "realistic",
+        "aggressive",
+        "explosive",
+        "intense",
+        "dramatic",
+        "cinematic",
+        "commercial",
+        "comic-book",
+        "flames",
+    ]
+    cleaned_prompt = re.sub(
+        re.escape(IMAGE_STYLE),
+        "",
+        image_prompt,
+        flags=re.IGNORECASE,
+    )
+
+    for phrase in banned_phrases:
+        cleaned_prompt = re.sub(
+            rf"\b{re.escape(phrase)}\b",
+            "",
+            cleaned_prompt,
+            flags=re.IGNORECASE,
+        )
+
+    cleaned_prompt = " ".join(cleaned_prompt.split()).strip(" ,.-")
+
+    if cleaned_prompt:
+        return f"{cleaned_prompt}. {IMAGE_STYLE}"
+
+    return IMAGE_STYLE
+
+
 def generate_scene_plan(scene_groups, original_script):
     prompt = (
         "Create a visual plan for these timed YouTube Shorts scenes. "
@@ -71,7 +114,12 @@ def generate_scene_plan(scene_groups, original_script):
         "mistakes where possible. Keep the narration aligned with its timed "
         "subtitle group. "
         "Add a clear visual description and a detailed image-generation "
-        "prompt for each scene."
+        "prompt for each scene. Describe the specific subject and action in "
+        "a clean illustration for an educational visual. Use simplified, "
+        "calm, clear, modern, subtle, and balanced language. Keep the "
+        "composition easy to understand and avoid sensational action-heavy "
+        "wording. "
+        f"Every image prompt must follow this style: {IMAGE_STYLE}"
     )
     scene_request = {
         "timed_subtitle_groups": scene_groups,
@@ -108,7 +156,9 @@ def generate_scene_plan(scene_groups, original_script):
                 **scene_group,
                 "narration_text": visual_plan["narration_text"],
                 "visual_description": visual_plan["visual_description"],
-                "image_prompt": visual_plan["image_prompt"],
+                "image_prompt": apply_image_style(
+                    visual_plan["image_prompt"]
+                ),
             })
     except Exception as error:
         raise SceneGenerationError(str(error)) from error

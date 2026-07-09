@@ -1,37 +1,65 @@
 [
     {
         "scene_number": 1,
-        "narration_text": "BMWs sound more aggressive in Sport mode for a reason. It is not just louder speakers or fake hype.",
-        "visual_description": "A BMW driving past camera, then a quick cut to the Sport mode button glowing on the center console.",
-        "image_prompt": "Cinematic YouTube Shorts frame, modern BMW M Sport interior and exterior montage, BMW driving by with an aggressive stance, then close-up of illuminated Sport mode button on center console, dramatic lighting, crisp reflections, high contrast, automotive commercial style, shallow depth of field, premium realistic look, vertical 9:16",
-        "estimated_duration_seconds": 3
+        "start_time": "00:00:00,000",
+        "end_time": "00:00:06,380",
+        "narration_text": "BMWs sound more aggressive in Sport mode for a reason. It is not just louder speakers or fake hype. When",
+        "estimated_duration_seconds": 6.38,
+        "visual_description": "A clean educational illustration of a BMW driving on a simple road in the foreground, with a subtle split concept showing normal mode on one side and Sport mode on the other. The Sport side feels slightly more focused with a clearer engine-related visual cue, while the normal side appears calmer. Keep the scene simple and explanatory, emphasizing the idea that the sound change comes from the car\u2019s settings rather than from speakers alone.",
+        "image_prompt": "a BMW-style sedan on a simple road shown with a subtle split comparison between normal mode and sport mode, calm technical infographic feel, clear focus on the car and sound concept, muted blue gray and white palette. clean modern editorial illustration, educational explainer style, simplified shapes, soft lighting, subtle depth, balanced composition, calm professional look, minimal background, no photorealism, no comic-book action effects, no exaggerated motion lines, no glowing explosions, no readable text, no logos, vertical 9:16"
     },
     {
         "scene_number": 2,
-        "narration_text": "When you switch to Sport, the car changes how the engine reacts. The throttle gets sharper, so the engine revs faster. The transmission also holds gears longer, which keeps the RPMs higher and makes the sound deeper and more urgent.",
-        "visual_description": "Instrument cluster and tachometer rising quickly while the gear indicator stays in a lower gear, with the driver\u2019s hand selecting Sport mode.",
-        "image_prompt": "Close-up of BMW digital instrument cluster and tachometer climbing quickly, gear indicator holding longer, sporty red and blue gauge accents, driver hand switching to Sport mode on the center console, motion blur, intense automotive tech aesthetic, realistic dashboard lighting, vertical 9:16",
-        "estimated_duration_seconds": 7
+        "start_time": "00:00:06,380",
+        "end_time": "00:00:12,200",
+        "narration_text": "You switch to Sport, the car changes how the engine reacts. The throttle gets sharper, so the engine revs faster.",
+        "estimated_duration_seconds": 5.82,
+        "visual_description": "A simplified cutaway-style illustration of a car dashboard and engine response concept. Show a driver selecting Sport mode and a small visual link to the engine responding more quickly, with a cleaner, more immediate feeling. The composition should make the throttle response easy to understand without mechanical clutter.",
+        "image_prompt": "driver hand selecting sport mode in a modern BMW-style cockpit, subtle visual connection to a simplified engine diagram reacting faster, clear educational layout, restrained colors, tidy dashboard elements, technical but friendly infographic style. clean modern editorial illustration, educational explainer style, simplified shapes, soft lighting, subtle depth, balanced composition, calm professional look, minimal background, no photorealism, no comic-book action effects, no exaggerated motion lines, no glowing explosions, no readable text, no logos, vertical 9:16"
     },
     {
         "scene_number": 3,
-        "narration_text": "On many BMWs, the exhaust valves open more too. That lets more engine noise escape instead of being quieted down. And in some models, the cabin sound system even adds a bit of engine sound inside the car to make it feel more intense.",
-        "visual_description": "Cutaway-style visual of exhaust valves opening at the rear of the car, then a cabin shot with sound waves visually represented near the speakers.",
-        "image_prompt": "Split cinematic automotive illustration: rear view of BMW exhaust with valves open, visible hot air and vibration, then interior cabin shot with subtle animated sound waves around speakers and dashboard, premium technical cutaway style, realistic and sleek, dark background with glowing highlights, vertical 9:16",
-        "estimated_duration_seconds": 8
+        "start_time": "00:00:12,740",
+        "end_time": "00:00:19,240",
+        "narration_text": "The transmission also holds gears longer, which keeps the RPMs higher and makes the sound deeper and more urgent.",
+        "estimated_duration_seconds": 6.5,
+        "visual_description": "A calm technical illustration of a gear selector and a simplified tachometer-style dial rising and staying higher for longer. Include a subtle engine graphic in the background to show that higher RPMs create a deeper, more urgent sound. Keep the scene clean and easy to follow.",
+        "image_prompt": "simplified car transmission concept with gear icon and tachometer-style dial staying in a higher range, subtle engine block illustration nearby, clear visual explanation of holding gears longer, muted neutral palette with a touch of red accent, minimal technical infographic composition. clean modern editorial illustration, educational explainer style, simplified shapes, soft lighting, subtle depth, balanced composition, calm professional look, minimal background, no photorealism, no comic-book action effects, no exaggerated motion lines, no glowing explosions, no readable text, no logos, vertical 9:16"
     },
     {
         "scene_number": 4,
-        "narration_text": "So the engine is not really \u201cchanging personality.\u201d BMW is just removing the filters and letting the mechanical drama come through.",
-        "visual_description": "A confident BMW rolling through a tunnel with reflections on the bodywork, emphasizing raw mechanical intensity.",
-        "image_prompt": "Stylized cinematic BMW driving through a tunnel, strong reflections on glossy paint, sense of raw mechanical energy, subtle motion blur, dramatic lighting, premium automotive commercial look, emotional and intense mood, vertical 9:16",
-        "estimated_duration_seconds": 4
+        "start_time": "00:00:19,240",
+        "end_time": "00:00:26,360",
+        "narration_text": "On many BMWs, the exhaust valves open more too. That lets more engine noise escape instead of being quieted down. And",
+        "estimated_duration_seconds": 7.12,
+        "visual_description": "A side-view illustration of a car with a simplified exhaust path. Show an exhaust valve opening wider and a gentle sound-wave concept moving outward from the rear of the car. The visual should communicate that less sound is being muted, without looking dramatic or noisy.",
+        "image_prompt": "side view of a BMW-style car with simplified exhaust system cutaway, visible exhaust valve opening wider, soft sound-wave shapes leaving the rear, minimal technical diagram look, calm instructional tone, balanced gray and warm metallic palette. clean modern editorial illustration, educational explainer style, simplified shapes, soft lighting, subtle depth, balanced composition, calm professional look, minimal background, no photorealism, no comic-book action effects, no exaggerated motion lines, no glowing explosions, no readable text, no logos, vertical 9:16"
     },
     {
         "scene_number": 5,
+        "start_time": "00:00:26,360",
+        "end_time": "00:00:31,440",
+        "narration_text": "In some models, the cabin sound system even adds a bit of engine sound inside the car to make it feel more intense.",
+        "estimated_duration_seconds": 5.08,
+        "visual_description": "An interior car illustration showing the driver cabin, with subtle layered sound waves gently moving from the front speakers toward the driver area. The idea is that some cars add a little engine sound inside the cabin, creating a more immersive feeling. Keep it understated and clear.",
+        "image_prompt": "modern car interior with driver seat, dashboard, and subtle cabin sound wave visuals, small speaker cues integrated cleanly, showing added engine sound inside the cabin in a restrained way, minimal premium interior palette, educational infographic style. clean modern editorial illustration, educational explainer style, simplified shapes, soft lighting, subtle depth, balanced composition, calm professional look, minimal background, no photorealism, no comic-book action effects, no exaggerated motion lines, no glowing explosions, no readable text, no logos, vertical 9:16"
+    },
+    {
+        "scene_number": 6,
+        "start_time": "00:00:31,440",
+        "end_time": "00:00:38,020",
+        "narration_text": "So the engine is not really changing personality. BMW is just removing the filters and letting the mechanical drama come through.",
+        "estimated_duration_seconds": 6.58,
+        "visual_description": "A conceptual illustration comparing a filtered, muted engine sound on one side and a clearer mechanical sound on the other. Use a simple visual filter icon or translucent layer being removed from the engine area, suggesting that Sport mode reveals more of the car\u2019s natural character rather than changing it completely.",
+        "image_prompt": "conceptual car engine illustration with a translucent filter layer lifting away, showing the same engine becoming clearer and more expressive, calm technical metaphor, minimal shapes, refined blue gray metallic palette, educational and balanced composition. clean modern editorial illustration, educational explainer style, simplified shapes, soft lighting, subtle depth, balanced composition, calm professional look, minimal background, no photorealism, no comic-book action effects, no exaggerated motion lines, no glowing explosions, no readable text, no logos, vertical 9:16"
+    },
+    {
+        "scene_number": 7,
+        "start_time": "00:00:38,020",
+        "end_time": "00:00:43,000",
         "narration_text": "Sport mode does not make the car louder. It makes the car tell the truth.",
-        "visual_description": "Final hero shot of the BMW accelerating away at night, taillights glowing, with bold on-screen text emphasizing the punchline.",
-        "image_prompt": "Hero shot of a BMW accelerating away at night, glowing red taillights, low camera angle, dramatic city lights, cinematic contrast, bold clean typography space for quote overlay, premium automotive ad style, vertical 9:16",
-        "estimated_duration_seconds": 4
+        "estimated_duration_seconds": 4.98,
+        "visual_description": "A final clean conclusion scene showing the BMW in Sport mode with a clear, balanced view of the car, engine, and subtle sound waves, all aligned in a neat editorial composition. The visual should feel conclusive and simple, reinforcing that Sport mode reveals the car\u2019s real mechanical character.",
+        "image_prompt": "elegant BMW-style sedan in sport mode with subtle clear sound wave concept and simplified engine detail, concluding visual metaphor of revealing the car\u2019s true character, minimal premium automotive infographic style, calm and polished composition. clean modern editorial illustration, educational explainer style, simplified shapes, soft lighting, subtle depth, balanced composition, calm professional look, minimal background, no photorealism, no comic-book action effects, no exaggerated motion lines, no glowing explosions, no readable text, no logos, vertical 9:16"
     }
 ]
