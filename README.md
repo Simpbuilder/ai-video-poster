@@ -149,6 +149,14 @@ The settings in `config.py` control how the project runs:
   the approval queue.
 - `VOICE_MODEL`: The OpenAI text-to-speech model used for voice generation.
 - `VOICE_NAME`: The voice used for generated speech.
+- `IMAGE_MODEL`: The OpenAI image model used for scene images.
+- `IMAGE_SIZE`: The generated scene image size.
+- `IMAGE_QUALITY`: The generated scene image quality.
+- `IMAGE_STYLE`: The global style added to scene image prompts.
+- `MAX_IMAGES_PER_RUN`: Safety limit for how many new images can be generated
+  in one run. Use `None` to generate all missing images.
+- `FORCE_REGENERATE_SCENES`: Allows regenerating `scenes.json` when `True`.
+- `FORCE_REGENERATE_VIDEO`: Allows regenerating `final.mp4` when `True`.
 
 ## Generated Files
 
