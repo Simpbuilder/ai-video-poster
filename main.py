@@ -29,7 +29,7 @@ for topic in read_topics("topics.txt"):
     script_path = save_script(folder_path, script)
     log(f"Saved script: {script_path}")
 
-    metadata_path = save_metadata(folder_path, topic, MODEL_NAME)
+    metadata_path = save_metadata(folder_path, topic, MODEL_NAME, usage)
     log(f"Saved metadata: {metadata_path}")
 
 log("Program finished.")
