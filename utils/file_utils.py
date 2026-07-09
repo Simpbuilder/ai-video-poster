@@ -68,4 +68,16 @@ def copy_script_to_approval(topic, script_path):
     approval_script_path = approval_folder / "script.txt"
     shutil.copy(script_path, approval_script_path)
 
+    approval = {
+        "topic": topic,
+        "status": "pending_review",
+        "approved": False,
+        "created_at": datetime.now(timezone.utc).isoformat(),
+        "script_file": "script.txt",
+    }
+    approval_path = approval_folder / "approval.json"
+
+    with open(approval_path, "w", encoding="utf-8") as approval_file:
+        json.dump(approval, approval_file, indent=4)
+
     return approval_script_path
