@@ -9,6 +9,7 @@ from utils.file_utils import (
     save_metadata,
     save_script,
 )
+from utils.cost_tracker import log_usage
 from utils.logger import log
 
 log("Program started.")
@@ -18,10 +19,12 @@ for topic in read_topics("topics.txt"):
     folder_path = create_topic_folder(topic)
 
     try:
-        script = generate_script(topic)
+        script, usage = generate_script(topic)
     except ScriptGenerationError as error:
         log(f"Could not generate a script for '{topic}': {error}")
         continue
+
+    log_usage(topic, MODEL_NAME, usage)
 
     script_path = save_script(folder_path, script)
     log(f"Saved script: {script_path}")

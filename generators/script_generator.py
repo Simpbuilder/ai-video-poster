@@ -36,4 +36,4 @@ def generate_script(topic):
     except Exception as error:
         raise ScriptGenerationError(str(error)) from error
 
-    return response.output_text
+    return response.output_text, response.usage
