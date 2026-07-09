@@ -8,5 +8,5 @@ IMAGE_MODEL = "gpt-image-1"
 IMAGE_SIZE = "1024x1536"
 IMAGE_QUALITY = "low"
 IMAGE_STYLE = "clean modern editorial illustration, educational explainer style, simplified shapes, soft lighting, subtle depth, balanced composition, calm professional look, minimal background, no photorealism, no comic-book action effects, no exaggerated motion lines, no glowing explosions, no readable text, no logos, vertical 9:16"
-FORCE_REGENERATE_SCENES = True
-FORCE_REGENERATE_VIDEO = True
+FORCE_REGENERATE_SCENES = False
+FORCE_REGENERATE_VIDEO = False

@@ -11,6 +11,7 @@ PIPELINE_STEPS = [
     "generate_voice.py",
     "generate_subtitles.py",
     "generate_scenes.py",
+    "generate_images.py",
     "generate_video.py",
     "complete_videos.py",
 ]
