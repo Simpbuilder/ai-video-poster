@@ -1,0 +1,37 @@
+[
+    {
+        "scene_number": 1,
+        "narration_text": "BMWs sound more aggressive in Sport mode for a reason. It is not just louder speakers or fake hype.",
+        "visual_description": "A BMW driving past camera, then a quick cut to the Sport mode button glowing on the center console.",
+        "image_prompt": "Cinematic YouTube Shorts frame, modern BMW M Sport interior and exterior montage, BMW driving by with an aggressive stance, then close-up of illuminated Sport mode button on center console, dramatic lighting, crisp reflections, high contrast, automotive commercial style, shallow depth of field, premium realistic look, vertical 9:16",
+        "estimated_duration_seconds": 3
+    },
+    {
+        "scene_number": 2,
+        "narration_text": "When you switch to Sport, the car changes how the engine reacts. The throttle gets sharper, so the engine revs faster. The transmission also holds gears longer, which keeps the RPMs higher and makes the sound deeper and more urgent.",
+        "visual_description": "Instrument cluster and tachometer rising quickly while the gear indicator stays in a lower gear, with the driver\u2019s hand selecting Sport mode.",
+        "image_prompt": "Close-up of BMW digital instrument cluster and tachometer climbing quickly, gear indicator holding longer, sporty red and blue gauge accents, driver hand switching to Sport mode on the center console, motion blur, intense automotive tech aesthetic, realistic dashboard lighting, vertical 9:16",
+        "estimated_duration_seconds": 7
+    },
+    {
+        "scene_number": 3,
+        "narration_text": "On many BMWs, the exhaust valves open more too. That lets more engine noise escape instead of being quieted down. And in some models, the cabin sound system even adds a bit of engine sound inside the car to make it feel more intense.",
+        "visual_description": "Cutaway-style visual of exhaust valves opening at the rear of the car, then a cabin shot with sound waves visually represented near the speakers.",
+        "image_prompt": "Split cinematic automotive illustration: rear view of BMW exhaust with valves open, visible hot air and vibration, then interior cabin shot with subtle animated sound waves around speakers and dashboard, premium technical cutaway style, realistic and sleek, dark background with glowing highlights, vertical 9:16",
+        "estimated_duration_seconds": 8
+    },
+    {
+        "scene_number": 4,
+        "narration_text": "So the engine is not really \u201cchanging personality.\u201d BMW is just removing the filters and letting the mechanical drama come through.",
+        "visual_description": "A confident BMW rolling through a tunnel with reflections on the bodywork, emphasizing raw mechanical intensity.",
+        "image_prompt": "Stylized cinematic BMW driving through a tunnel, strong reflections on glossy paint, sense of raw mechanical energy, subtle motion blur, dramatic lighting, premium automotive commercial look, emotional and intense mood, vertical 9:16",
+        "estimated_duration_seconds": 4
+    },
+    {
+        "scene_number": 5,
+        "narration_text": "Sport mode does not make the car louder. It makes the car tell the truth.",
+        "visual_description": "Final hero shot of the BMW accelerating away at night, taillights glowing, with bold on-screen text emphasizing the punchline.",
+        "image_prompt": "Hero shot of a BMW accelerating away at night, glowing red taillights, low camera angle, dramatic city lights, cinematic contrast, bold clean typography space for quote overlay, premium automotive ad style, vertical 9:16",
+        "estimated_duration_seconds": 4
+    }
+]
