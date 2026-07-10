@@ -37,3 +37,6 @@ scenes.json
 logs/*.log
 logs/costs.csv
 !logs/.gitkeep
+# Exported upload-ready videos
+exports/*
+!exports/.gitkeep
