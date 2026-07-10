@@ -9,6 +9,9 @@ FOLDER_GROUPS = [
     "rejected",
 ]
 
+EXPORTS_FOLDER = Path("exports")
+UNSAFE_FILENAME_CHARACTERS = '<>:"/\\|?*'
+
 
 def file_exists(topic_folder, file_name):
     file_path = topic_folder / file_name
@@ -25,6 +28,29 @@ def yes_or_no(value):
         return "yes"
 
     return "no"
+
+
+def make_safe_video_filename(topic):
+    safe_name = topic.lower()
+    safe_name = safe_name.replace(" ", "-")
+    safe_name = safe_name.replace("'", "")
+    safe_name = safe_name.replace("\u2019", "")
+
+    for character in UNSAFE_FILENAME_CHARACTERS:
+        safe_name = safe_name.replace(character, "")
+
+    return f"{safe_name}.mp4"
+
+
+def get_export_paths(topic):
+    export_file_name = make_safe_video_filename(topic)
+    export_mp4_path = EXPORTS_FOLDER / export_file_name
+    upload_txt_path = export_mp4_path.with_suffix(".txt")
+
+    return {
+        "mp4": export_mp4_path,
+        "txt": upload_txt_path,
+    }
 
 
 def find_topics():
@@ -79,10 +105,12 @@ def print_topic_details(topics):
     for topic in topics:
         topic_folder = topic["topic_folder"]
         approval = topic["approval"]
+        topic_name = approval.get("topic", "Unknown topic")
+        export_paths = get_export_paths(topic_name)
 
         print()
         print(f"Folder group: {topic['folder_group']}")
-        print(f"Topic: {approval.get('topic', 'Unknown topic')}")
+        print(f"Topic: {topic_name}")
         print(f"Status: {approval.get('status', 'Unknown status')}")
         print(f"script.txt: {yes_or_no(file_exists(topic_folder, 'script.txt'))}")
         print(f"voice.mp3: {yes_or_no(file_exists(topic_folder, 'voice.mp3'))}")
@@ -90,6 +118,8 @@ def print_topic_details(topics):
         print(f"scenes.json: {yes_or_no(file_exists(topic_folder, 'scenes.json'))}")
         print(f"Scene images: {count_scene_images(topic_folder)}")
         print(f"final.mp4: {yes_or_no(file_exists(topic_folder, 'final.mp4'))}")
+        print(f"Exported mp4: {yes_or_no(export_paths['mp4'].exists())}")
+        print(f"Upload txt: {yes_or_no(export_paths['txt'].exists())}")
 
 
 def main():
