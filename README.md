@@ -192,7 +192,13 @@ py export_videos.py
 
 The export tool copies each `final.mp4` from `posted/` into `exports/` using a
 clean lowercase filename based on the topic. It skips export files that already
-exist, and it does not move, delete, upload, or post anything.
+exist.
+
+For each exported video, the tool also creates a matching `.txt` file with the
+topic, suggested title, suggested caption, and source folder path. If that
+`.txt` file already exists, it is skipped.
+
+The export tool does not move, delete, upload, or post anything.
 
 ## Approval Behavior
 
@@ -242,5 +248,7 @@ The settings in `config.py` control how the project runs:
   `completed/`.
 - `exports/topic-name.mp4`: A clean copy of an approved final video, ready for
   uploading.
+- `exports/topic-name.txt`: Basic upload information for the matching exported
+  video.
 - `metadata.json`: Script details, model information, timestamps, and token
   usage stored in the topic's `output/` folder.
