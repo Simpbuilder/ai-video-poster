@@ -55,7 +55,9 @@ def write_upload_info_file(video, export_path):
     upload_info = (
         f"Topic: {topic}\n"
         f"Suggested title: {topic}\n"
-        f"Suggested caption: Quick explanation: {topic}\n"
+        f"Suggested caption: Ever wondered about this? {topic}. "
+        "Quick explanation in under a minute.\n"
+        "Suggested hashtags: #shorts #explained #didyouknow\n"
         f"Source folder path: {video['source_folder']}\n"
     )
 
