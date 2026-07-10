@@ -48,6 +48,7 @@ ai-video-poster/
 |-- project_status.py     Shows a read-only overview of project progress
 |-- review_videos.py      Approves or rejects completed videos
 |-- run_pipeline.py       Runs the automation stages in order
+|-- upload_checklist.py   Shows exported videos ready for upload
 |-- requirements.txt      Python packages used by the project
 `-- topics.txt            Topics to process
 ```
@@ -141,6 +142,12 @@ py export_videos.py
 
 Copy approved final videos into `exports/` for uploading.
 
+```powershell
+py upload_checklist.py
+```
+
+Show exported videos and their upload information.
+
 ## Working on PC and Mac
 
 You can work on this project from both your PC and your Mac by using GitHub to
@@ -186,6 +193,8 @@ py review_videos.py
 7. Run `py review_videos.py`.
 8. Approve, reject, or skip each completed video.
 9. Run `py export_videos.py` to copy approved final videos into `exports/`.
+10. Run `py upload_checklist.py` to see which exported videos are ready to
+    upload.
 
 The first pipeline run creates scripts for review. The second pipeline run
 continues approved scripts through voice, subtitles, scene planning, image
@@ -245,6 +254,19 @@ topic, suggested title, suggested caption, and source folder path. If that
 `.txt` file already exists, it is skipped.
 
 The export tool does not move, delete, upload, or post anything.
+
+## Upload Checklist
+
+Before uploading, you can review exported videos with:
+
+```powershell
+py upload_checklist.py
+```
+
+The checklist shows every `.mp4` in `exports/`, whether it has matching upload
+information, and the suggested title, caption, and hashtags when available.
+This tool only reads files. It does not upload, post, delete, or run the
+pipeline.
 
 ## Approval Behavior
 
