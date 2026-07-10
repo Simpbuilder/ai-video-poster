@@ -32,6 +32,7 @@ ai-video-poster/
 |-- rejected/             Rejected topic folders
 |-- utils/                File, logging, and usage helper functions
 |-- .env                   OpenAI API key (keep this private)
+|-- add_topic.py          Adds new topics to topics.txt safely
 |-- approve.py            Approves or rejects pending scripts
 |-- complete_videos.py    Moves finished videos into completed/
 |-- config.py             Project settings
@@ -126,7 +127,8 @@ py review_videos.py
 
 ## Normal Workflow
 
-1. Add one topic per line to `topics.txt`.
+1. Add one topic per line to `topics.txt`, or run `py add_topic.py` to add a
+   topic safely.
 2. Run `py run_pipeline.py`.
 3. Run `py approve.py`.
 4. Choose `approve` or `reject`, then select scripts by number, comma-separated
@@ -139,6 +141,9 @@ py review_videos.py
 The first pipeline run creates scripts for review. The second pipeline run
 continues approved scripts through voice, subtitles, scene planning, image
 generation, and video, then moves each finished topic folder into `completed/`.
+
+The `add_topic.py` helper prevents empty topics and exact duplicate topics from
+being added to `topics.txt`.
 
 ## Project Status
 
