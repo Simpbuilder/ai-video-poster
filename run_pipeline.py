@@ -26,6 +26,22 @@ def run_step(script_name):
     )
 
 
+def print_next_steps():
+    print("\nNext steps")
+    print("==========")
+    print("To approve new scripts, run:")
+    print("py approve.py")
+    print()
+    print("To review finished videos, run:")
+    print("py review_videos.py")
+    print()
+    print("To inspect project progress, run:")
+    print("py project_status.py")
+    print()
+    print("To add another topic, run:")
+    print("py add_topic.py")
+
+
 def main():
     print("Pipeline started.")
 
@@ -46,6 +62,7 @@ def main():
             sys.exit(1)
 
     print("\nPipeline finished successfully.")
+    print_next_steps()
 
 
 if __name__ == "__main__":
