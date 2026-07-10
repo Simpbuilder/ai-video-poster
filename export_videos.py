@@ -35,8 +35,16 @@ def find_posted_videos():
         with open(approval_path, "r", encoding="utf-8") as approval_file:
             approval = json.load(approval_file)
 
+        topic = approval.get("topic", "untitled video")
+        status = approval.get("status", "unknown")
+
+        if status != "approved_final":
+            print(f"Skipped: {topic}")
+            print(f"Status is not approved_final: {status}")
+            continue
+
         posted_videos.append({
-            "topic": approval.get("topic", "untitled video"),
+            "topic": topic,
             "video_path": video_path,
             "source_folder": approval_path.parent,
         })
