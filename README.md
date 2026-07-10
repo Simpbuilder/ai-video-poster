@@ -24,6 +24,7 @@ ai-video-poster/
 |-- approval/             Pending and approved topic folders
 |-- assets/               Project media assets
 |-- completed/            Finished topic folders and videos
+|-- exports/              Clean video copies ready for uploading
 |-- generators/           Script, scene, voice, subtitle, and video generators
 |-- logs/                 Daily logs and API token usage
 |-- output/               Generated scripts and metadata
@@ -36,6 +37,7 @@ ai-video-poster/
 |-- approve.py            Approves or rejects pending scripts
 |-- complete_videos.py    Moves finished videos into completed/
 |-- config.py             Project settings
+|-- export_videos.py      Copies approved final videos into exports/
 |-- generate_images.py    Creates images from scene plans
 |-- generate_scenes.py    Creates scene plans for approved scripts
 |-- generate_subtitles.py Creates subtitles for voice-generated scripts
@@ -137,6 +139,7 @@ py review_videos.py
 6. Find the completed video at `completed/topic/final.mp4`.
 7. Run `py review_videos.py`.
 8. Approve, reject, or skip each completed video.
+9. Run `py export_videos.py` to copy approved final videos into `exports/`.
 
 The first pipeline run creates scripts for review. The second pipeline run
 continues approved scripts through voice, subtitles, scene planning, image
@@ -177,6 +180,19 @@ The tool shows each completed video and lets you approve, reject, or skip it.
 - Skipped videos remain in `completed/` for later review.
 
 This tool only organizes reviewed videos. It does not upload or post them.
+
+## Exporting Videos
+
+After final videos are approved, they live in `posted/`. To create clean copies
+for uploading, run:
+
+```powershell
+py export_videos.py
+```
+
+The export tool copies each `final.mp4` from `posted/` into `exports/` using a
+clean lowercase filename based on the topic. It skips export files that already
+exist, and it does not move, delete, upload, or post anything.
 
 ## Approval Behavior
 
@@ -224,5 +240,7 @@ The settings in `config.py` control how the project runs:
 - `subtitles.srt`: Timed subtitles for the video.
 - `final.mp4`: The completed vertical video, stored in its topic folder under
   `completed/`.
+- `exports/topic-name.mp4`: A clean copy of an approved final video, ready for
+  uploading.
 - `metadata.json`: Script details, model information, timestamps, and token
   usage stored in the topic's `output/` folder.
