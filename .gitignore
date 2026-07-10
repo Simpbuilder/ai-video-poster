@@ -13,6 +13,19 @@ __pycache__/
 output/*
 !output/.gitkeep
 
+# Generated workflow topic folders
+approval/*
+!approval/.gitkeep
+
+completed/*
+!completed/.gitkeep
+
+posted/*
+!posted/.gitkeep
+
+rejected/*
+!rejected/.gitkeep
+
 # Generated media files
 voice.mp3
 final.mp4
