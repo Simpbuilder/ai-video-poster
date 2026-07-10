@@ -1,4 +1,26 @@
+# Secrets
 .env
+
+# Python environment and cache files
 .venv/
 __pycache__/
-output/
+*.pyc
+
+# System files
+.DS_Store
+
+# Generated project output
+output/*
+!output/.gitkeep
+
+# Generated media files
+voice.mp3
+final.mp4
+scene_*.png
+subtitles.srt
+scenes.json
+
+# Logs
+logs/*.log
+logs/costs.csv
+!logs/.gitkeep
