@@ -38,9 +38,31 @@ def find_posted_videos():
         posted_videos.append({
             "topic": approval.get("topic", "untitled video"),
             "video_path": video_path,
+            "source_folder": approval_path.parent,
         })
 
     return posted_videos
+
+
+def write_upload_info_file(video, export_path):
+    info_path = export_path.with_suffix(".txt")
+
+    if info_path.exists():
+        print(f"Upload info already exists: {info_path}")
+        return
+
+    topic = video["topic"]
+    upload_info = (
+        f"Topic: {topic}\n"
+        f"Suggested title: {topic}\n"
+        f"Suggested caption: Quick explanation: {topic}\n"
+        f"Source folder path: {video['source_folder']}\n"
+    )
+
+    with open(info_path, "w", encoding="utf-8") as info_file:
+        info_file.write(upload_info)
+
+    print(f"Created upload info: {info_path}")
 
 
 def export_video(video):
@@ -52,12 +74,13 @@ def export_video(video):
     if export_path.exists():
         print(f"Skipped: {video['topic']}")
         print(f"Already exists: {export_path}")
-        return
+    else:
+        shutil.copy(video["video_path"], export_path)
 
-    shutil.copy(video["video_path"], export_path)
+        print(f"Exported: {video['topic']}")
+        print(f"Saved to: {export_path}")
 
-    print(f"Exported: {video['topic']}")
-    print(f"Saved to: {export_path}")
+    write_upload_info_file(video, export_path)
 
 
 def main():
