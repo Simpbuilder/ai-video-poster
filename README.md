@@ -42,6 +42,7 @@ ai-video-poster/
 |-- generate_voice.py     Creates audio for approved scripts
 |-- main.py               Generates scripts from topics
 |-- prepare_voice.py      Lists approved scripts ready for voice generation
+|-- project_status.py     Shows a read-only overview of project progress
 |-- review_videos.py      Approves or rejects completed videos
 |-- run_pipeline.py       Runs the automation stages in order
 |-- requirements.txt      Python packages used by the project
@@ -91,6 +92,38 @@ Open a terminal in the project folder and run:
 py -m pip install -r requirements.txt
 ```
 
+## Working on PC and Mac
+
+You can work on this project from both your PC and your Mac by using GitHub to
+keep the project synced.
+
+Before starting work on either device, run `git pull` so you have the latest
+version. After making changes, save your files, commit the changes, and push
+them back to GitHub.
+
+Windows uses `py` for Python commands. Mac uses `python3` for Python commands.
+
+The Mac setup currently works for coding, script generation, voice, subtitles,
+scene planning, and image generation. Final video rendering currently works
+best on the PC because the Mac ffmpeg install had subtitle filter issues. That
+Mac rendering issue is parked for later.
+
+For Mac:
+
+```bash
+cd ~/Desktop/ai-video-poster
+git pull
+python3 review_videos.py
+```
+
+For PC:
+
+```powershell
+cd C:\Users\thecr\Desktop\ai-video-poster
+git pull
+py review_videos.py
+```
+
 ## Normal Workflow
 
 1. Add one topic per line to `topics.txt`.
@@ -106,6 +139,22 @@ py -m pip install -r requirements.txt
 The first pipeline run creates scripts for review. The second pipeline run
 continues approved scripts through voice, subtitles, scene planning, image
 generation, and video, then moves each finished topic folder into `completed/`.
+
+## Project Status
+
+You can check the current state of the project at any time with:
+
+```powershell
+py project_status.py
+```
+
+This tool scans `approval/`, `completed/`, `posted/`, and `rejected/`. It shows
+how many topics are in each folder and whether each topic has files like
+`script.txt`, `voice.mp3`, `subtitles.srt`, `scenes.json`, scene images, and
+`final.mp4`.
+
+The status tool only reads the project folders. It does not generate anything,
+move anything, delete anything, or call any APIs.
 
 ## Final Video Review
 
