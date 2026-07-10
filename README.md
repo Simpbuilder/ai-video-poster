@@ -95,6 +95,52 @@ Open a terminal in the project folder and run:
 py -m pip install -r requirements.txt
 ```
 
+## Command Cheat Sheet
+
+On Mac, use `python3` instead of `py`.
+
+```powershell
+py add_topic.py
+```
+
+Add a new topic safely.
+
+```powershell
+py run_pipeline.py
+```
+
+Run the automation pipeline.
+
+```powershell
+py approve.py
+```
+
+Approve or reject generated scripts.
+
+```powershell
+py project_status.py
+```
+
+Show the current project status.
+
+```powershell
+py reset_stage.py
+```
+
+Reset a topic back to an earlier generation stage.
+
+```powershell
+py review_videos.py
+```
+
+Review completed final videos.
+
+```powershell
+py export_videos.py
+```
+
+Copy approved final videos into `exports/` for uploading.
+
 ## Working on PC and Mac
 
 You can work on this project from both your PC and your Mac by using GitHub to
