@@ -1,5 +1,8 @@
 # Secrets
 .env
+client_secret.json
+token.json
+youtube_upload_history.json
 
 # Python environment and cache files
 .venv/
