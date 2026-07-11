@@ -61,6 +61,41 @@ def approve_script(selected_script):
     print(f"Approved: {approval['topic']}")
 
 
+def remove_approved_topics_from_topics_file(approved_topics):
+    topics_path = Path("topics.txt")
+
+    if not topics_path.exists():
+        return
+
+    approved_topic_set = {
+        topic.strip()
+        for topic in approved_topics
+    }
+
+    original_lines = topics_path.read_text(encoding="utf-8").splitlines()
+    remaining_topics = []
+    removed_count = 0
+
+    for line in original_lines:
+        topic = line.strip()
+
+        if topic in approved_topic_set:
+            removed_count += 1
+            continue
+
+        remaining_topics.append(topic)
+
+    topics_path.write_text(
+        "\n".join(remaining_topics) + ("\n" if remaining_topics else ""),
+        encoding="utf-8",
+    )
+
+    if removed_count:
+        print(f"Removed approved topics from topics.txt: {removed_count}")
+    else:
+        print("No matching approved topics were removed from topics.txt.")
+
+
 def get_rejected_folder(source_folder):
     rejected_folder = Path("rejected")
     rejected_folder.mkdir(exist_ok=True)
@@ -119,13 +154,19 @@ def main():
         print("No valid scripts were selected.")
         return
 
+    approved_topics = []
+
     for selected_number in selected_numbers:
         selected_script = pending_scripts[selected_number - 1]
 
         if action == "approve":
             approve_script(selected_script)
+            approved_topics.append(selected_script["data"]["topic"])
         else:
             reject_script(selected_script)
+
+    if approved_topics:
+        remove_approved_topics_from_topics_file(approved_topics)
 
 
 if __name__ == "__main__":
