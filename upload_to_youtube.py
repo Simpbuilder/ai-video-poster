@@ -170,6 +170,7 @@ def upload_private_video(youtube, video_path, title, description):
         },
         "status": {
             "privacyStatus": PRIVACY_STATUS,
+            "selfDeclaredMadeForKids": False,
         },
     }
 
