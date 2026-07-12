@@ -6,6 +6,81 @@ from pathlib import Path
 POSTED_FOLDER = Path("posted")
 EXPORTS_FOLDER = Path("exports")
 UNSAFE_FILENAME_CHARACTERS = '<>:"/\\|?*'
+BASE_HASHTAGS = [
+    "#shorts",
+    "#explained",
+    "#didyouknow",
+]
+
+HASHTAG_CATEGORIES = [
+    {
+        "keywords": [
+            "car",
+            "engine",
+            "turbo",
+            "brake",
+            "driving",
+            "electric car",
+        ],
+        "hashtags": ["#cars", "#cartok", "#engineering", "#carfacts"],
+    },
+    {
+        "keywords": [
+            "brain",
+            "memory",
+            "dream",
+            "psychology",
+            "people",
+            "human",
+        ],
+        "hashtags": ["#psychology", "#brain", "#humanbehavior", "#facts"],
+    },
+    {
+        "keywords": [
+            "phone",
+            "battery",
+            "screen",
+            "tech",
+            "internet",
+            "ai",
+        ],
+        "hashtags": ["#tech", "#technology", "#howitworks", "#facts"],
+    },
+    {
+        "keywords": [
+            "food",
+            "spicy",
+            "caffeine",
+            "energy drink",
+            "water",
+        ],
+        "hashtags": ["#foodfacts", "#science", "#bodyfacts"],
+    },
+    {
+        "keywords": [
+            "animal",
+            "cat",
+            "dog",
+            "bird",
+            "shark",
+            "fish",
+        ],
+        "hashtags": ["#animals", "#animalfacts", "#nature"],
+    },
+    {
+        "keywords": [
+            "money",
+            "card",
+            "price",
+            "buying",
+            "expensive",
+        ],
+        "hashtags": ["#money", "#psychology", "#financefacts"],
+    },
+]
+
+GENERAL_HASHTAGS = ["#facts", "#learnsomething", "#curiosity"]
+MAX_HASHTAGS = 8
 
 
 def make_safe_video_filename(topic):
@@ -18,6 +93,42 @@ def make_safe_video_filename(topic):
         safe_name = safe_name.replace(character, "")
 
     return f"{safe_name}.mp4"
+
+
+def add_hashtag(hashtags, hashtag):
+    hashtag = hashtag.lower()
+
+    if hashtag not in hashtags and len(hashtags) < MAX_HASHTAGS:
+        hashtags.append(hashtag)
+
+
+def get_suggested_hashtags(topic):
+    topic_text = topic.lower()
+    hashtags = []
+    matched_category = False
+
+    for hashtag in BASE_HASHTAGS:
+        add_hashtag(hashtags, hashtag)
+
+    for category in HASHTAG_CATEGORIES:
+        has_matching_keyword = any(
+            keyword in topic_text
+            for keyword in category["keywords"]
+        )
+
+        if not has_matching_keyword:
+            continue
+
+        matched_category = True
+
+        for hashtag in category["hashtags"]:
+            add_hashtag(hashtags, hashtag)
+
+    if not matched_category:
+        for hashtag in GENERAL_HASHTAGS:
+            add_hashtag(hashtags, hashtag)
+
+    return " ".join(hashtags)
 
 
 def find_posted_videos():
@@ -60,12 +171,13 @@ def write_upload_info_file(video, export_path):
         return
 
     topic = video["topic"]
+    suggested_hashtags = get_suggested_hashtags(topic)
     upload_info = (
         f"Topic: {topic}\n"
         f"Suggested title: {topic}\n"
         f"Suggested caption: Ever wondered about this? {topic}. "
         "Quick explanation in under a minute.\n"
-        "Suggested hashtags: #shorts #explained #didyouknow\n"
+        f"Suggested hashtags: {suggested_hashtags}\n"
         f"Source folder path: {video['source_folder']}\n"
     )
 
