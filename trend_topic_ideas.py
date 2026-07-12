@@ -17,6 +17,7 @@ from config import OPENAI_MODEL
 PROJECT_FOLDER = Path(__file__).resolve().parent
 OUTPUT_FILE = PROJECT_FOLDER / "topic_ideas.txt"
 TOPICS_FILE = PROJECT_FOLDER / "topics.txt"
+YOUTUBE_UPLOAD_HISTORY_FILE = PROJECT_FOLDER / "youtube_upload_history.json"
 
 TREND_FEEDS = {
     "United States": "https://trends.google.com/trending/rss?geo=US",
@@ -145,11 +146,60 @@ def read_exported_video_names():
     return topics
 
 
+def make_topic_from_video_filename(video_filename):
+    video_path = Path(video_filename)
+    topic = video_path.stem
+    topic = topic.replace("-", " ")
+    topic = topic.replace("_", " ")
+    return topic
+
+
+def read_youtube_upload_history_topics():
+    if not YOUTUBE_UPLOAD_HISTORY_FILE.exists():
+        return []
+
+    try:
+        upload_history = json.loads(
+            YOUTUBE_UPLOAD_HISTORY_FILE.read_text(encoding="utf-8")
+        )
+    except json.JSONDecodeError:
+        print(
+            "Warning: youtube_upload_history.json is not valid JSON. "
+            "Uploaded video topics will not be checked."
+        )
+        return []
+
+    if not isinstance(upload_history, list):
+        print(
+            "Warning: youtube_upload_history.json does not contain a list. "
+            "Uploaded video topics will not be checked."
+        )
+        return []
+
+    topics = []
+
+    for upload in upload_history:
+        if not isinstance(upload, dict):
+            continue
+
+        video_filename = upload.get("video_filename")
+        title = upload.get("title")
+
+        if video_filename:
+            topics.append(make_topic_from_video_filename(video_filename))
+
+        if title:
+            topics.append(title)
+
+    return topics
+
+
 def read_existing_topics():
     existing_topics = []
     existing_topics.extend(read_topics_file())
     existing_topics.extend(read_topic_folder_names())
     existing_topics.extend(read_exported_video_names())
+    existing_topics.extend(read_youtube_upload_history_topics())
     return remove_duplicates(existing_topics)
 
 

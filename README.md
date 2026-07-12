@@ -35,6 +35,7 @@ ai-video-poster/
 |-- .env                   OpenAI API key (keep this private)
 |-- add_topic.py          Adds new topics to topics.txt safely
 |-- approve.py            Approves or rejects pending scripts
+|-- client_secret.json    Local/private YouTube OAuth file (ignored by Git)
 |-- complete_videos.py    Moves finished videos into completed/
 |-- config.py             Project settings
 |-- export_videos.py      Copies approved final videos into exports/
@@ -46,9 +47,18 @@ ai-video-poster/
 |-- main.py               Generates scripts from topics
 |-- prepare_voice.py      Lists approved scripts ready for voice generation
 |-- project_status.py     Shows a read-only overview of project progress
+|-- refresh_export_info.py Refreshes exports/*.txt upload information
 |-- review_videos.py      Approves or rejects completed videos
 |-- run_pipeline.py       Runs the automation stages in order
+|-- run_until_scenes.py   Runs the cheaper pipeline up to scene planning
+|-- token.json            Local/private YouTube token file (ignored by Git)
+|-- topic_ideas.txt       Trend-generated topic ideas for review
+|-- trend_topic_ideas.py  Creates trend-inspired topic ideas
+|-- upload_all_to_youtube.py Batch uploads exported videos as private
 |-- upload_checklist.py   Shows exported videos ready for upload
+|-- upload_to_youtube.py  Uploads one exported video as private
+|-- youtube_setup_check.py Checks YouTube upload setup
+|-- youtube_upload_history.json Local/private upload history (ignored by Git)
 |-- requirements.txt      Python packages used by the project
 `-- topics.txt            Topics to process
 ```
@@ -107,10 +117,22 @@ py add_topic.py
 Add a new topic safely.
 
 ```powershell
+py trend_topic_ideas.py
+```
+
+Generate trend-inspired topic ideas.
+
+```powershell
 py run_pipeline.py
 ```
 
 Run the automation pipeline.
+
+```powershell
+py run_until_scenes.py
+```
+
+Run the cheaper pre-production pipeline up to scene planning.
 
 ```powershell
 py approve.py
@@ -143,10 +165,34 @@ py export_videos.py
 Copy approved final videos into `exports/` for uploading.
 
 ```powershell
+py refresh_export_info.py
+```
+
+Refresh exported upload info text files.
+
+```powershell
 py upload_checklist.py
 ```
 
 Show exported videos and their upload information.
+
+```powershell
+py youtube_setup_check.py
+```
+
+Check whether YouTube upload setup is ready.
+
+```powershell
+py upload_to_youtube.py
+```
+
+Upload one selected exported video to YouTube as private.
+
+```powershell
+py upload_all_to_youtube.py
+```
+
+Batch upload new exported videos to YouTube as private.
 
 ## Working on PC and Mac
 
@@ -182,9 +228,10 @@ py review_videos.py
 
 ## Normal Workflow
 
-1. Add one topic per line to `topics.txt`, or run `py add_topic.py` to add a
-   topic safely.
-2. Run `py run_pipeline.py`.
+1. Add one topic per line to `topics.txt`, run `py add_topic.py`, or run
+   `py trend_topic_ideas.py` to generate ideas from public trend sources.
+2. Run `py run_pipeline.py`, or run `py run_until_scenes.py` if you only want
+   the cheaper pre-production steps first.
 3. Run `py approve.py`.
 4. Choose `approve` or `reject`, then select scripts by number, comma-separated
    numbers, or `all`.
@@ -195,6 +242,9 @@ py review_videos.py
 9. Run `py export_videos.py` to copy approved final videos into `exports/`.
 10. Run `py upload_checklist.py` to see which exported videos are ready to
     upload.
+11. Run `py youtube_setup_check.py` before uploading to YouTube.
+12. Run `py upload_to_youtube.py` for one video, or `py upload_all_to_youtube.py`
+    for a private batch upload.
 
 The first pipeline run creates scripts for review. The second pipeline run
 continues approved scripts through voice, subtitles, scene planning, image
@@ -202,6 +252,38 @@ generation, and video, then moves each finished topic folder into `completed/`.
 
 The `add_topic.py` helper prevents empty topics and exact duplicate topics from
 being added to `topics.txt`.
+
+## Trend Topic Ideas
+
+You can create topic ideas from public trend sources with:
+
+```powershell
+py trend_topic_ideas.py
+```
+
+This tool checks Google Trends-style public RSS feeds for the United States,
+United Kingdom, Australia, and India. It asks OpenAI to turn those trends into
+educational Shorts ideas and saves them to `topic_ideas.txt`.
+
+After the ideas are generated, the tool can optionally add them to `topics.txt`.
+When ideas are moved into `topics.txt`, `topic_ideas.txt` is cleared.
+
+To avoid repeating old videos, it checks existing project folders, exported
+video names, and `youtube_upload_history.json` when that file is available. It
+does not call YouTube.
+
+## Pre-Production Only
+
+To prepare scripts, voice, subtitles, and scene plans without generating images
+or rendering final videos, run:
+
+```powershell
+py run_until_scenes.py
+```
+
+This is useful when you want to review or prepare ideas while avoiding image
+generation and video rendering costs. Final rendering still works best on the
+PC because of the Mac ffmpeg subtitle filter issue.
 
 ## Project Status
 
@@ -255,6 +337,16 @@ topic, suggested title, suggested caption, and source folder path. If that
 
 The export tool does not move, delete, upload, or post anything.
 
+To refresh existing `exports/*.txt` files with the current local title, caption,
+and topic-specific hashtag logic, run:
+
+```powershell
+py refresh_export_info.py
+```
+
+This only updates or creates `.txt` files. It does not touch `.mp4` files and
+does not call APIs.
+
 ## Upload Checklist
 
 Before uploading, you can review exported videos with:
@@ -267,6 +359,46 @@ The checklist shows every `.mp4` in `exports/`, whether it has matching upload
 information, and the suggested title, caption, and hashtags when available.
 This tool only reads files. It does not upload, post, delete, or run the
 pipeline.
+
+## YouTube Upload Workflow
+
+YouTube uploads use the YouTube Data API v3 with `client_secret.json` and
+`token.json`. These files are private local files and should not be committed.
+The upload history is saved in `youtube_upload_history.json`, which should also
+stay private/local.
+
+Before uploading, check setup with:
+
+```powershell
+py youtube_setup_check.py
+```
+
+This checks for `client_secret.json`, exported videos, matching `.txt` upload
+info files, and required Python packages.
+
+To upload one selected exported video as private, run:
+
+```powershell
+py upload_to_youtube.py
+```
+
+It reads the title, caption, and hashtags from the matching `exports/*.txt`
+file, uploads the video as `private`, and records the result in
+`youtube_upload_history.json`. It never uploads as public.
+
+To batch upload all new exported videos as private, run:
+
+```powershell
+py upload_all_to_youtube.py
+```
+
+The batch uploader skips videos already listed in `youtube_upload_history.json`.
+Before uploading, it lets you choose a pause between uploads: 1 minute,
+3 minutes, 10 minutes, 30 minutes, 60 minutes, or a custom number of seconds.
+It saves upload history after each successful upload.
+
+All YouTube uploads are private first. After upload, review each video manually
+in YouTube Studio and set it public there when you are ready.
 
 ## Approval Behavior
 
@@ -304,6 +436,7 @@ The settings in `config.py` control how the project runs:
 
 ## Generated Files
 
+- `topic_ideas.txt`: Trend-generated topic ideas waiting for review.
 - `script.txt`: The generated YouTube Shorts script.
 - `approval.json`: The topic's approval status and processing progress.
 - `scenes.json`: The scene plan, narration sections, visual descriptions, image
@@ -320,3 +453,7 @@ The settings in `config.py` control how the project runs:
   video.
 - `metadata.json`: Script details, model information, timestamps, and token
   usage stored in the topic's `output/` folder.
+- `client_secret.json`: Private YouTube OAuth client file. Do not commit it.
+- `token.json`: Private YouTube OAuth token file. Do not commit it.
+- `youtube_upload_history.json`: Local record of uploaded videos. Do not commit
+  it.
