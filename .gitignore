@@ -43,3 +43,4 @@ logs/costs.csv
 # Exported upload-ready videos
 exports/*
 !exports/.gitkeep
+archive/finished_topics.json
