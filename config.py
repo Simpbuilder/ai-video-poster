@@ -11,3 +11,5 @@ IMAGE_QUALITY = "medium"
 IMAGE_STYLE = "clean modern editorial illustration, educational explainer style, simplified shapes, soft lighting, subtle depth, balanced composition, calm professional look, minimal background, no photorealism, no comic-book action effects, no exaggerated motion lines, no glowing explosions, no readable text, no logos, vertical 9:16"
 FORCE_REGENERATE_SCENES = False
 FORCE_REGENERATE_VIDEO = False
+ENABLE_IMAGE_MOTION = False
+IMAGE_MOTION_ZOOM = 1.04

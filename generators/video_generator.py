@@ -7,6 +7,8 @@ SUBTITLE_STYLE = (
     "FontSize=18,PrimaryColour=&H00FFFFFF,"
     "OutlineColour=&H00000000,Outline=3,Alignment=2,MarginV=160"
 )
+VIDEO_WIDTH = 1080
+VIDEO_HEIGHT = 1920
 
 
 def srt_time_to_seconds(srt_time):
@@ -164,21 +166,26 @@ def create_scene_background_command(
         input_number = position + 1
         scene_label = f"[scene_{input_number}]"
         background_label = f"[background_{input_number}]"
+        is_final_scene = position + 1 == len(scene_images)
 
-        if position + 1 < len(scene_images):
+        if not is_final_scene:
             display_end = scene_images[position + 1]["start_seconds"]
         else:
-            display_end = 99999
+            display_end = None
 
         filters.append(
-            f"[{input_number}:v]scale=1080:1920:"
-            "force_original_aspect_ratio=increase,"
-            f"crop=1080:1920,setsar=1{scene_label}"
+            create_static_scene_filter(input_number, scene_label)
         )
+
+        enable_expression = create_overlay_enable_expression(
+            scene,
+            display_end,
+            is_final_scene,
+        )
+
         filters.append(
             f"{previous_background}{scene_label}overlay="
-            f"enable='between(t,{scene['start_seconds']},"
-            f"{display_end})'{background_label}"
+            f"enable='{enable_expression}'{background_label}"
         )
         previous_background = background_label
 
@@ -215,6 +222,23 @@ def create_scene_background_command(
     return command
 
 
+def create_static_scene_filter(input_number, scene_label):
+    return (
+        f"[{input_number}:v]scale={VIDEO_WIDTH}:{VIDEO_HEIGHT}:"
+        "force_original_aspect_ratio=increase,"
+        f"crop={VIDEO_WIDTH}:{VIDEO_HEIGHT},setsar=1{scene_label}"
+    )
+
+
+def create_overlay_enable_expression(scene, display_end, is_final_scene):
+    start_seconds = scene["start_seconds"]
+
+    if is_final_scene:
+        return f"gte(t,{start_seconds})"
+
+    return f"between(t,{start_seconds},{display_end})"
+
+
 def generate_video(voice_path, subtitles_path, output_path):
     voice_path = Path(voice_path)
     subtitles_path = Path(subtitles_path)
@@ -224,6 +248,13 @@ def generate_video(voice_path, subtitles_path, output_path):
 
     if scene_images:
         audio_duration = get_audio_duration(voice_path)
+
+        print(
+            "Image motion is disabled because stable rendering is currently "
+            "preferred."
+        )
+        print("Final scene stays visible until audio ends.")
+
         command = create_scene_background_command(
             voice_path,
             subtitles_path,
