@@ -9,6 +9,8 @@ from config import IMAGE_SIZE
 
 
 PEXELS_SEARCH_URL = "https://api.pexels.com/v1/search"
+PEXELS_VIDEO_SEARCH_URL = "https://api.pexels.com/videos/search"
+VISUAL_MODE_PATH = Path("visual_mode.json")
 STOP_WORDS = {
     "a",
     "an",
@@ -47,9 +49,9 @@ STOP_WORDS = {
 
 
 def choose_image_source():
-    print("Choose image source:")
+    print("Choose visual source:")
     print("1. OpenAI image generation")
-    print("2. Pexels stock images")
+    print("2. Pexels")
 
     choice = input("Enter 1 or 2: ").strip()
 
@@ -59,8 +61,35 @@ def choose_image_source():
     if choice == "2":
         return "pexels"
 
-    print("Image generation canceled. Please enter 1 or 2 next time.")
+    print("Visual generation canceled. Please enter 1 or 2 next time.")
     return None
+
+
+def read_pexels_visual_mode():
+    if not VISUAL_MODE_PATH.exists():
+        print("No visual_mode.json found. Defaulting Pexels mode to images.")
+        return "images"
+
+    try:
+        settings = json.loads(VISUAL_MODE_PATH.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        print("Error: visual_mode.json is not valid JSON. Visual generation canceled.")
+        return None
+
+    if not isinstance(settings, dict):
+        print("Error: visual_mode.json must contain a settings object.")
+        return None
+
+    pexels_mode = settings.get("pexels_mode")
+
+    if pexels_mode not in ["images", "videos"]:
+        print(
+            "Error: visual_mode.json must set pexels_mode "
+            "to either images or videos. Visual generation canceled."
+        )
+        return None
+
+    return pexels_mode
 
 
 def find_scene_files():
@@ -143,6 +172,17 @@ def check_pexels_dependencies():
     return True
 
 
+def check_pexels_video_dependencies():
+    try:
+        import requests  # noqa: F401
+    except ImportError:
+        print("Error: Pexels video mode needs requests.")
+        print("Run pip install -r requirements.txt and try again.")
+        return False
+
+    return True
+
+
 def get_topic_name(topic_folder):
     approval_path = topic_folder / "approval.json"
 
@@ -212,6 +252,27 @@ def search_pexels_photos(api_key, query):
     return data.get("photos", [])
 
 
+def search_pexels_videos(api_key, query):
+    import requests
+
+    response = requests.get(
+        PEXELS_VIDEO_SEARCH_URL,
+        headers={
+            "Authorization": api_key,
+        },
+        params={
+            "query": query,
+            "orientation": "portrait",
+            "per_page": 10,
+        },
+        timeout=30,
+    )
+    response.raise_for_status()
+
+    data = response.json()
+    return data.get("videos", [])
+
+
 def choose_pexels_photo(photos, used_photo_ids):
     if not photos:
         return None
@@ -223,6 +284,87 @@ def choose_pexels_photo(photos, used_photo_ids):
             return photo
 
     return photos[0]
+
+
+def is_mp4_video_file(video_file):
+    file_type = video_file.get("file_type", "").lower()
+    link = video_file.get("link", "").lower()
+
+    return "mp4" in file_type or link.split("?")[0].endswith(".mp4")
+
+
+def is_vertical_video_file(video_file):
+    width = video_file.get("width") or 0
+    height = video_file.get("height") or 0
+
+    return height >= width
+
+
+def get_video_file_pixels(video_file):
+    width = video_file.get("width") or 0
+    height = video_file.get("height") or 0
+
+    return width * height
+
+
+def choose_pexels_video_file(video):
+    video_files = video.get("video_files", [])
+    mp4_files = [
+        video_file
+        for video_file in video_files
+        if is_mp4_video_file(video_file)
+    ]
+
+    if not mp4_files:
+        return None
+
+    vertical_files = [
+        video_file
+        for video_file in mp4_files
+        if is_vertical_video_file(video_file)
+    ]
+    candidates = vertical_files or mp4_files
+    good_size_files = [
+        video_file
+        for video_file in candidates
+        if (video_file.get("width") or 0) >= 720
+        and (video_file.get("height") or 0) >= 1280
+        and (video_file.get("width") or 0) <= 1440
+        and (video_file.get("height") or 0) <= 2560
+    ]
+
+    if good_size_files:
+        return max(good_size_files, key=get_video_file_pixels)
+
+    files_with_size = [
+        video_file
+        for video_file in candidates
+        if video_file.get("width") and video_file.get("height")
+    ]
+
+    if files_with_size:
+        return max(files_with_size, key=get_video_file_pixels)
+
+    return candidates[0]
+
+
+def choose_pexels_video(videos, used_video_ids):
+    usable_videos = [
+        video
+        for video in videos
+        if choose_pexels_video_file(video) is not None
+    ]
+
+    if not usable_videos:
+        return None
+
+    for video in usable_videos:
+        video_id = video.get("id")
+
+        if video_id not in used_video_ids:
+            return video
+
+    return usable_videos[0]
 
 
 def get_pexels_image_url(photo):
@@ -259,6 +401,25 @@ def download_pexels_image(api_key, image_url, image_path):
     image.save(image_path, "PNG")
 
 
+def download_pexels_video(api_key, video_url, video_path):
+    import requests
+
+    response = requests.get(
+        video_url,
+        headers={
+            "Authorization": api_key,
+        },
+        stream=True,
+        timeout=120,
+    )
+    response.raise_for_status()
+
+    with open(video_path, "wb") as output_file:
+        for chunk in response.iter_content(chunk_size=1024 * 1024):
+            if chunk:
+                output_file.write(chunk)
+
+
 def make_pexels_credit(scene_image_filename, photo, search_query):
     return {
         "scene_image_filename": scene_image_filename,
@@ -266,6 +427,20 @@ def make_pexels_credit(scene_image_filename, photo, search_query):
         "photographer_name": photo.get("photographer"),
         "photographer_url": photo.get("photographer_url"),
         "photo_page_url": photo.get("url"),
+        "original_search_query": search_query,
+    }
+
+
+def make_pexels_video_credit(scene_video_filename, video, video_file, search_query):
+    creator = video.get("user", {})
+
+    return {
+        "scene_video_filename": scene_video_filename,
+        "pexels_video_id": video.get("id"),
+        "creator_name": creator.get("name"),
+        "creator_url": creator.get("url"),
+        "video_page_url": video.get("url"),
+        "selected_video_file_link": video_file.get("link"),
         "original_search_query": search_query,
     }
 
@@ -288,8 +463,34 @@ def load_pexels_credits(topic_folder):
     return []
 
 
+def load_pexels_video_credits(topic_folder):
+    credits_path = topic_folder / "pexels_video_credits.json"
+
+    if not credits_path.exists():
+        return []
+
+    try:
+        credits = json.loads(credits_path.read_text(encoding="utf-8"))
+    except json.JSONDecodeError:
+        print(f"Warning: could not read existing video credits: {credits_path}")
+        return []
+
+    if isinstance(credits, list):
+        return credits
+
+    return []
+
+
 def save_pexels_credits(topic_folder, credits):
     credits_path = topic_folder / "pexels_credits.json"
+    credits_path.write_text(
+        json.dumps(credits, indent=4),
+        encoding="utf-8",
+    )
+
+
+def save_pexels_video_credits(topic_folder, credits):
+    credits_path = topic_folder / "pexels_video_credits.json"
     credits_path.write_text(
         json.dumps(credits, indent=4),
         encoding="utf-8",
@@ -303,6 +504,24 @@ def update_pexels_credit(credits, credit):
 
     for existing_credit in credits:
         if existing_credit.get("scene_image_filename") == scene_image_filename:
+            updated_credits.append(credit)
+            replaced = True
+        else:
+            updated_credits.append(existing_credit)
+
+    if not replaced:
+        updated_credits.append(credit)
+
+    return updated_credits
+
+
+def update_pexels_video_credit(credits, credit):
+    scene_video_filename = credit["scene_video_filename"]
+    updated_credits = []
+    replaced = False
+
+    for existing_credit in credits:
+        if existing_credit.get("scene_video_filename") == scene_video_filename:
             updated_credits.append(credit)
             replaced = True
         else:
@@ -435,6 +654,94 @@ def generate_pexels_images(scene_files):
             print(f"Saved image: {image_path}")
 
 
+def generate_pexels_videos(scene_files):
+    if not check_pexels_video_dependencies():
+        return
+
+    api_key = get_pexels_api_key()
+
+    if api_key is None:
+        return
+
+    for scenes_path in scene_files:
+        topic_folder = scenes_path.parent
+        scenes = load_scenes(scenes_path)
+
+        if scenes is None:
+            continue
+
+        topic = get_topic_name(topic_folder)
+        credits = load_pexels_video_credits(topic_folder)
+        used_video_ids = {
+            credit.get("pexels_video_id")
+            for credit in credits
+            if credit.get("pexels_video_id")
+        }
+
+        for scene in scenes:
+            scene_number = scene["scene_number"]
+            video_path = topic_folder / f"scene_{scene_number:03}.mp4"
+
+            if video_path.exists():
+                print(f"Video already exists: {video_path}")
+                continue
+
+            search_query = make_pexels_search_query(topic, scene)
+            print(f"Searching Pexels videos for scene {scene_number}: {search_query}")
+
+            try:
+                videos = search_pexels_videos(api_key, search_query)
+            except Exception as error:
+                print(
+                    f"Could not search Pexels videos for scene {scene_number} "
+                    f"for '{topic_folder.name}': {error}"
+                )
+                continue
+
+            video = choose_pexels_video(videos, used_video_ids)
+
+            if video is None:
+                print(
+                    f"Warning: Pexels found no video result for scene {scene_number} "
+                    f"in '{topic_folder.name}'."
+                )
+                continue
+
+            video_file = choose_pexels_video_file(video)
+
+            if video_file is None or not video_file.get("link"):
+                print(
+                    f"Warning: Pexels video has no downloadable MP4 file "
+                    f"for scene {scene_number} in '{topic_folder.name}'."
+                )
+                continue
+
+            try:
+                download_pexels_video(api_key, video_file["link"], video_path)
+            except Exception as error:
+                print(
+                    f"Could not download Pexels video for scene {scene_number} "
+                    f"in '{topic_folder.name}': {error}"
+                )
+                continue
+
+            video_id = video.get("id")
+
+            if video_id:
+                used_video_ids.add(video_id)
+
+            credit = make_pexels_video_credit(
+                video_path.name,
+                video,
+                video_file,
+                search_query,
+            )
+            credits = update_pexels_video_credit(credits, credit)
+            save_pexels_video_credits(topic_folder, credits)
+
+            print(f"Saved video: {video_path}")
+
+
 def main():
     image_source = choose_image_source()
 
@@ -450,7 +757,12 @@ def main():
     if image_source == "openai":
         generate_openai_images(scene_files)
     elif image_source == "pexels":
-        generate_pexels_images(scene_files)
+        pexels_mode = read_pexels_visual_mode()
+
+        if pexels_mode == "images":
+            generate_pexels_images(scene_files)
+        elif pexels_mode == "videos":
+            generate_pexels_videos(scene_files)
 
 
 if __name__ == "__main__":
