@@ -1,5 +1,6 @@
 import json
 import os
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from urllib.parse import unquote, urlparse
@@ -290,6 +291,23 @@ def choose_instagram_account(accounts):
         return None
 
     return instagram_accounts[selected_number - 1]
+
+
+def choose_upload_mode():
+    print("Choose Instagram upload mode:")
+    print("1. Upload one unpublished video")
+    print("2. Upload all unpublished videos")
+
+    choice = input("Enter 1 or 2: ").strip()
+
+    if choice == "1":
+        return "single"
+
+    if choice == "2":
+        return "batch"
+
+    print("Invalid choice. Upload canceled.")
+    return None
 
 
 def find_exported_videos():
@@ -598,6 +616,66 @@ def choose_video(videos):
     return videos[selected_number - 1]
 
 
+def show_batch_video_list(videos):
+    print("Videos that will be processed:")
+    print(f"Total videos: {len(videos)}")
+
+    for number, video_path in enumerate(videos, start=1):
+        print(f"{number}. {video_path.name}")
+
+
+def choose_batch_pause():
+    print("Choose pause between publish requests:")
+    print("1. 10 seconds")
+    print("2. 30 seconds")
+    print("3. 60 seconds")
+    print("4. 3 minutes")
+    print("5. Custom seconds")
+
+    choice = input("Enter 1, 2, 3, 4, or 5: ").strip()
+
+    if choice == "1":
+        return 10
+
+    if choice == "2":
+        return 30
+
+    if choice == "3":
+        return 60
+
+    if choice == "4":
+        return 180
+
+    if choice != "5":
+        print("Invalid choice. Upload canceled.")
+        return None
+
+    custom_seconds = input("Enter custom pause in seconds: ").strip()
+
+    try:
+        pause_seconds = int(custom_seconds)
+    except ValueError:
+        print("Invalid pause. Please enter a whole number.")
+        return None
+
+    if pause_seconds < 10:
+        print("Pause must be at least 10 seconds.")
+        return None
+
+    return pause_seconds
+
+
+def confirm_publish_all(pause_seconds):
+    print(f"Selected pause between publish requests: {pause_seconds} seconds")
+    answer = input("Type PUBLISH ALL to upload and publish all listed videos: ").strip()
+
+    if answer != "PUBLISH ALL":
+        print("Batch upload canceled.")
+        return False
+
+    return True
+
+
 def get_line_value(lines, label):
     prefix = f"{label}:"
 
@@ -854,6 +932,45 @@ def create_instagram_reel_publish(api_key, requests, payload):
     return post
 
 
+def publish_video(
+    api_key,
+    requests,
+    media_history,
+    post_history,
+    selected_account,
+    video_path,
+    content,
+):
+    media_record = get_or_upload_media(
+        api_key,
+        requests,
+        media_history,
+        video_path,
+    )
+
+    if media_record is None:
+        return False
+
+    payload = build_publish_payload(selected_account, media_record, content)
+    post = create_instagram_reel_publish(api_key, requests, payload)
+
+    if post is None:
+        return False
+
+    save_post_record(
+        post_history,
+        post,
+        selected_account,
+        media_record,
+        content,
+    )
+
+    print("Instagram Reel publish request created.")
+    print(f"Post ID: {post.get('_id')}")
+    print(f"Status: {post.get('status')}")
+    return True
+
+
 def post_record_exists(post_history, post_id):
     for record in post_history:
         if isinstance(record, dict) and record.get("zernio_post_id") == post_id:
@@ -888,9 +1005,112 @@ def save_post_record(post_history, post, account, media_record, content):
     save_json_list(POST_HISTORY_FILE, post_history)
 
 
+def run_single_mode(
+    api_key,
+    requests,
+    media_history,
+    post_history,
+    selected_account,
+    unpublished_videos,
+):
+    selected_video = choose_video(unpublished_videos)
+
+    if selected_video is None:
+        return
+
+    content = read_caption(selected_video)
+
+    if content is None:
+        return
+
+    if not confirm_publish(selected_account, selected_video, content):
+        return
+
+    publish_video(
+        api_key,
+        requests,
+        media_history,
+        post_history,
+        selected_account,
+        selected_video,
+        content,
+    )
+
+
+def run_batch_mode(
+    api_key,
+    requests,
+    media_history,
+    post_history,
+    selected_account,
+    unpublished_videos,
+    exported_video_count,
+    already_published_count,
+):
+    show_batch_video_list(unpublished_videos)
+    pause_seconds = choose_batch_pause()
+
+    if pause_seconds is None:
+        return
+
+    if not confirm_publish_all(pause_seconds):
+        return
+
+    successful_count = 0
+    failed_count = 0
+    skipped_caption_count = 0
+
+    for index, video_path in enumerate(unpublished_videos, start=1):
+        print()
+        print(f"Processing {index} of {len(unpublished_videos)}: {video_path.name}")
+        made_publish_request = False
+
+        content = read_caption(video_path)
+
+        if content is None:
+            skipped_caption_count += 1
+            print(f"Skipped because caption info was missing: {video_path.name}")
+        else:
+            published = publish_video(
+                api_key,
+                requests,
+                media_history,
+                post_history,
+                selected_account,
+                video_path,
+                content,
+            )
+            made_publish_request = True
+
+            if published:
+                successful_count += 1
+                print(f"Success: {video_path.name}")
+            else:
+                failed_count += 1
+                print(f"Failed: {video_path.name}")
+
+        if made_publish_request and index < len(unpublished_videos):
+            print(f"Waiting {pause_seconds} seconds before the next video.")
+            time.sleep(pause_seconds)
+
+    print()
+    print("Batch summary")
+    print("=============")
+    print(f"Videos found: {exported_video_count}")
+    print(f"Already published videos skipped: {already_published_count}")
+    print(f"Successfully published: {successful_count}")
+    print(f"Failed: {failed_count}")
+    print(f"Videos skipped because caption info was missing: {skipped_caption_count}")
+
+
 def main():
     print("Unified Instagram uploader")
     print("==========================")
+
+    upload_mode = choose_upload_mode()
+
+    if upload_mode is None:
+        return
 
     if not load_environment():
         return
@@ -955,52 +1175,32 @@ def main():
 
     print(f"Exported videos found: {len(exported_videos)}")
     print(f"Already published videos hidden: {already_published_count}")
-    print(f"Videos available to publish: {len(unpublished_videos)}")
+    print(f"Unpublished videos available: {len(unpublished_videos)}")
 
     if not unpublished_videos:
         print("All exported videos have already been published to Instagram.")
         return
 
-    selected_video = choose_video(unpublished_videos)
-
-    if selected_video is None:
-        return
-
-    content = read_caption(selected_video)
-
-    if content is None:
-        return
-
-    if not confirm_publish(selected_account, selected_video, content):
-        return
-
-    media_record = get_or_upload_media(
-        api_key,
-        requests,
-        media_history,
-        selected_video,
-    )
-
-    if media_record is None:
-        return
-
-    payload = build_publish_payload(selected_account, media_record, content)
-    post = create_instagram_reel_publish(api_key, requests, payload)
-
-    if post is None:
-        return
-
-    save_post_record(
-        post_history,
-        post,
-        selected_account,
-        media_record,
-        content,
-    )
-
-    print("Instagram Reel publish request created.")
-    print(f"Post ID: {post.get('_id')}")
-    print(f"Status: {post.get('status')}")
+    if upload_mode == "single":
+        run_single_mode(
+            api_key,
+            requests,
+            media_history,
+            post_history,
+            selected_account,
+            unpublished_videos,
+        )
+    elif upload_mode == "batch":
+        run_batch_mode(
+            api_key,
+            requests,
+            media_history,
+            post_history,
+            selected_account,
+            unpublished_videos,
+            len(exported_videos),
+            already_published_count,
+        )
 
 
 if __name__ == "__main__":
