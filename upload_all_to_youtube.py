@@ -17,7 +17,7 @@ TOKEN_FILE = PROJECT_FOLDER / "token.json"
 UPLOAD_HISTORY_FILE = PROJECT_FOLDER / "youtube_upload_history.json"
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
-PRIVACY_STATUS = "private"
+PRIVACY_STATUS = "public"
 
 
 def load_upload_history():
@@ -324,7 +324,7 @@ def print_final_summary(upload_results, skipped_count):
 
 
 def main():
-    print("Batch private YouTube uploader")
+    print("Batch public YouTube uploader")
     print("==============================")
 
     upload_history = load_upload_history()
@@ -347,7 +347,7 @@ def main():
     print_upload_plan(videos_to_upload, pause_seconds)
 
     confirmed = ask_yes_or_no(
-        "\nUpload all listed videos to YouTube as private? (y/n): "
+        "\nUpload all listed videos to YouTube as public? (y/n): "
     )
 
     if not confirmed:

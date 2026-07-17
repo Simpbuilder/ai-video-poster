@@ -16,7 +16,7 @@ TOKEN_FILE = PROJECT_FOLDER / "token.json"
 UPLOAD_HISTORY_FILE = PROJECT_FOLDER / "youtube_upload_history.json"
 
 SCOPES = ["https://www.googleapis.com/auth/youtube.upload"]
-PRIVACY_STATUS = "private"
+PRIVACY_STATUS = "public"
 
 
 def load_upload_history():
@@ -211,7 +211,7 @@ def record_successful_upload(upload_history, video_path, video_id, title):
 
 
 def main():
-    print("Private YouTube uploader")
+    print("Public YouTube uploader")
     print("========================")
 
     videos = find_exported_videos()
@@ -256,7 +256,7 @@ def main():
     print(f"Privacy status: {PRIVACY_STATUS}")
 
     confirmed = ask_yes_or_no(
-        "\nUpload this video to YouTube as private? (y/n): "
+        "\nUpload this video to YouTube as public? (y/n): "
     )
 
     if not confirmed:
