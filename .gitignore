@@ -3,6 +3,8 @@
 client_secret.json
 token.json
 youtube_upload_history.json
+zernio_media_history.json
+zernio_post_history.json
 visual_mode.json
 
 # Python environment and cache files
