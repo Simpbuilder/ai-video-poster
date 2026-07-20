@@ -6,3 +6,4 @@ google-auth-httplib2
 requests
 pillow
 zernio-sdk
+customtkinter

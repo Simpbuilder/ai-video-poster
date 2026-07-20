@@ -106,6 +106,45 @@ Open a terminal in the project folder and run:
 py -m pip install -r requirements.txt
 ```
 
+## InfoBuilder Studio UI
+
+InfoBuilder Studio is a desktop dashboard for using the project without typing
+terminal commands. It runs the existing Python scripts, streams their output in
+a built-in console, and keeps all of the original safety confirmations.
+
+Install the required packages first:
+
+```powershell
+py -m pip install -r requirements.txt
+```
+
+On Windows, launch the UI with:
+
+```powershell
+launch_ui.bat
+```
+
+On macOS, launch it with:
+
+```bash
+./launch_ui.command
+```
+
+You can also launch it manually:
+
+```powershell
+py app.py
+```
+
+On Mac:
+
+```bash
+python3 app.py
+```
+
+The terminal scripts still work independently. The UI is a friendlier control
+panel on top of the same project tools.
+
 ## Command Cheat Sheet
 
 On Mac, use `python3` instead of `py`.
